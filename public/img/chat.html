@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"> 
+	<title>Bootstrap 实例 - 表单控件状态</title>
+	<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script type="text/javascript" src="../../../libs/handlebars-v4.0.11.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!--  -->
+	<script src="../public/js/char_ui.js"></script>
+	<script src="../public/js/user_list_ui.js"></script>
+	<script src="../public/js/hb.js"></script>
+	<script type="text/x-handlebars" id="msg">
+		{{#msg_p msgs}}
+	    <p class="msg">{{user}} : {{msg}}</p>
+		{{/msg_p}}
+	</script>
+	<script type="text/x-handlebars" id="user">
+		{{#user_p users}}
+		<p class="user">{{user_name}}</p>
+		{{/user_p}}
+	</script>
+	<script type="text/x-handlebars" id="room">
+		
+	</script>
+</head>
+<body>
+	<!--  -->
+	<div class="container" style="margin-top: 20px;">
+		<div class="row">
+			<div class="col-md-12">
+				<form class="form-inline" role="form">
+					<div class="form-group">
+						<label for="username">
+							用户名
+						</label>
+						<input type="text" class="form-control" name="username">
+					</div>
+					<div class="form-group">
+						<label for="password">
+							密码
+						</label>
+						<input type="text" class="form-control" name="password">
+					</div>
+					<button type="submit" class="btn btn-success">登录</button>
+					<button type="button" class="btn btn-default">注册</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!--  -->
+	<div class="container" style="margin-top: 20px;">
+		<div class="row">
+			<div id="msgs" class="col-md-10 jumbotron pre-scrollable well" style="height: 1000px;">
+				
+			</div>
+			<div id="users" class="col-md-2 jumbotron pre-scrollable " style="height: 1000px;" id="users" style="position: relative;">
+				<span style="position: absolute;margin: 10px;" class="glyphicon glyphicon-user"></span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<form role="form" class="form-horizontal" id="chat">
+					<div class="form-horizontal">
+						<input type="text" name="msg" class="form-control" autocomplete="off" id="context_msg">
+						<button type="submit" class="btn btn-default btn-block" id="send_msg">
+							<span class="glyphicon glyphicon-comment"></span>
+						</button>
+					</div>				
+				</form>
+			</div>
+		</div>
+	</div>
+	<!--  -->
+	<div class="container" style="margin-top: 20px;">
+		<div class="row">
+			<div id="rooms" class="col-md-12 jumbotron pre-scrollable">
+				<form class="" role="form">
+					<span class="glyphicon glyphicon-home btn-lg"></span>
+					<select class="form-control" multiple>
+						<option class="input-lg">1</option>
+						<option class="input-lg">2</option>
+						<option class="input-lg">3</option>
+						<option class="input-lg">4</option>
+						<option class="input-lg">5</option>
+						<option class="input-lg">6</option>
+					</select>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

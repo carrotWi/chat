@@ -1,0 +1,27 @@
+{
+  "name": "handlebar_test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "char_ui.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/18784771/chat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/18784771/chat/issues"
+  },
+  "homepage": "https://github.com/18784771/chat#readme",
+  "devDependencies": {
+    "grunt": "^1.0.2",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-init": "^0.3.2",
+    "express" : "4.16.2",
+    "handlebars" : "4.0.11",
+  }
+}
