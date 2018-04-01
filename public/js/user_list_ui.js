@@ -37,17 +37,17 @@ var user_list_ui = function () {
 		$users = $('#users');
 	}
 
-	function _add(user_name) {
+	function _add(name) {
 		var data = {
-			users : [{user_name : user_name}],
+			users : [{name : name}],
 		}
 		hb.combine_append($tem_user,$users,data);
 	}
 
-	function _remove(user_name) {
+	function _remove(name) {
 		var $user = $users.children();
 		$user.each(function (index,item) {
-			if ($(item).html() === user_name) {
+			if ($(item).html() === name) {
 				$(item).remove();
 			}
 		});

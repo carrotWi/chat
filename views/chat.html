@@ -15,12 +15,12 @@
 	<script src="../public/js/hb.js"></script>
 	<script type="text/x-handlebars" id="msg">
 		{{#msg_p msgs}}
-	    <p class="msg">{{name}} : {{msg}}</p>
+	    <p class="msg">{{name}} : {{text}}</p>
 		{{/msg_p}}
 	</script>
 	<script type="text/x-handlebars" id="user">
 		{{#user_p users}}
-		<p class="user">{{user_name}}</p>
+		<p class="user">{{name}}</p>
 		{{/user_p}}
 	</script>
 	<script type="text/x-handlebars" id="room">
@@ -45,8 +45,10 @@
 						</label>
 						<input type="password" class="form-control" name="password">
 					</div>
-					<button type="submit" class="btn btn-success">登录</button>
-					<button type="button" class="btn btn-info">注册</button>
+					<div class="form-group">
+						<button type="submit" class="btn btn-success">登录</button>
+						<button type="button" class="btn btn-info">注册</button>
+					</div>
 				</form>
 			</div>
 		</div>

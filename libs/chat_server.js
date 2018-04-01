@@ -61,15 +61,10 @@ module.exports = function (server) {
 
 	 //转发给同一个聊天室
 	 function handle_msg(socket) {
-	 	socket.on('msg',function (msg) {
+	 	socket.on('msg',function (context) {
 	 		var user_col = chat_cache_database.select('users','id',socket.id);
-	 		var data = {
-	 			msg : msg,
-	 			name : user_col[0].name,
-	 		};
 	 		//text,username,time,room
-	 		chat_cache_database.add('msgs',data.msg,data.name);
-	 		console.log(data);
+	 		var data = chat_cache_database.add('msgs',context,user_col[0].name);
 	 		socket.broadcast.emit('msg',data);
 	 	});
 	 }

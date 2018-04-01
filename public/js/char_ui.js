@@ -16,10 +16,7 @@ var char = function () {
 		if (msg_list) {
 			for (var i = 0; i < msg_list.length; i++) {
 				var msg = msg_list[i];
-				var data = {
-					name : msg.username,
-					msg : msg.text,
-				}
+				var data = msg;
 				_show_msg_handle(data);
 			}
 		}
@@ -36,9 +33,9 @@ var char = function () {
 	}
 
 	//加一条消息,单传渲染,不发socket
-	function _show_msg_handle(data) {
+	function _show_msg_handle(msg) {
 		var data = {
-			msgs : [{name : data.name , msg : data.msg,}]
+			msgs : [msg],
 		}
 		_hb.combine_append($tem_msg,$msgs,data);
 	}
@@ -56,12 +53,12 @@ var char = function () {
 		$tem_msg = $('#msg');
 	}
 
-	function _add(msg) {
+	function _add(context) {
 		var data = {
-			msgs : [{name : 'you' , msg : msg,}]
+			msgs : [{name : 'you' , text : context,}]
 		}
 		_hb.combine_append($tem_msg,$msgs,data);
-		__io.send(msg);
+		__io.send(context);
 	}
 	/*
 		todo
