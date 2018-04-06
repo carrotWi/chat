@@ -17,12 +17,12 @@ window.onload = function () {
 	// hb.init();
 	_io.init('http://localhost:8088');
 	hb.init();
+	login_enroll_ui.init();
 	_io.on('user_list',function (data) {
 		user_list_ui.init(_io,hb,data);
 	});
 	_io.on('msg_list',function (data) {
-		console.log(data);
-		char.init(_io,hb,data);
+		char_ui.init(_io,hb,data);
 	});
 
 	// hb.combine_append($('#msg'),$('#msgs'),data1);

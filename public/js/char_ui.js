@@ -1,4 +1,4 @@
-var char = function () {
+var char_ui = function () {
 	var $send;
 	var $msgs;
 	var $tem_msg;
@@ -12,7 +12,7 @@ var char = function () {
 		__io = _io;
 		_cache();
 		_bindEvent();
-
+		$send.attr('disabled','disabled');
 		if (msg_list) {
 			for (var i = 0; i < msg_list.length; i++) {
 				var msg = msg_list[i];
@@ -21,7 +21,9 @@ var char = function () {
 			}
 		}
 	}
-
+	function _open() {
+		$send.removeAttr('disabled');
+	}
 	function _bindEvent() {
 		$form.submit(function () {
 			return false;
@@ -70,5 +72,6 @@ var char = function () {
 	return {
 		init : _init,
 		send : _add,
+		open : _open,
 	};
 }();
