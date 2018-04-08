@@ -106,6 +106,17 @@ module.exports = function (opt) {
 			callback(result);
 		});
 	}
+	//校验有没有这个用户
+	function _has_user(data,callback) {
+		var name = data.name;
+		_select_user_password_name(name,callback);
+	}
+	//查询用户表
+	function _select_user_password_name(name,callback) {
+		var sql = 'SELECT * FROM user_password WHERE name=?;';
+		var value = [name];
+		connection.query(sql,value,callback);
+	}
 	//查询用户帐号密码是否存在
 	function _select_user_password(name,password,callback) {
 		var sql = 'SELECT * FROM user_password WHERE name=? AND password=?;';
@@ -116,5 +127,6 @@ module.exports = function (opt) {
 	return {
 		add : _add,
 		verify : _verify,
+		has_user : _has_user,
 	}
 }

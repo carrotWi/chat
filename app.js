@@ -19,10 +19,11 @@ const routes = require('./route/index.js');
 app.use('/', routes);
 
 // static middleware after the routes
-app.use('/public/img', express.static('public/img'))
-app.use('/public/css', express.static('public/css'))
-app.use('/public/js', express.static('public/js'))
-app.use('/views',express.static('views'))
+app.use('/public/img', express.static('public/img'));
+app.use('/public/css', express.static('public/css'));
+app.use('/public/js', express.static('public/js'));
+app.use('/public/libs', express.static('public/libs'));
+app.use('/views',express.static('views'));
 
 // catch 404
 // app.use((req, res, next) => {

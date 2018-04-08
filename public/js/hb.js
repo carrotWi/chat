@@ -17,11 +17,12 @@ window.onload = function () {
 	// hb.init();
 	_io.init('http://localhost:8088');
 	hb.init();
-	login_enroll_ui.init();
-	_io.on('user_list',function (data) {
+	tip_ui.init();
+	login_enroll_ui.init(_io);
+	_io.once('user_list',function (data) {
 		user_list_ui.init(_io,hb,data);
 	});
-	_io.on('msg_list',function (data) {
+	_io.once('msg_list',function (data) {
 		char_ui.init(_io,hb,data);
 	});
 
@@ -55,7 +56,7 @@ var hb = function () {
 		});
 		return this;
 	}
-
+	//$a1模板
 	function _combine_replace($a1,$a2,data) {
 		var template = Handlebars.compile($a1.html());
 		var result = template(data);
@@ -68,8 +69,12 @@ var hb = function () {
 		var result = template(data);
 		$a2.html($a2.html() + result);
 	}
-
-
+	//data-->json
+	// function _add_tip($a1,$a2,class,msg) {
+	// 	var template = Handlebars.compile($a1.html());
+	// 	var result = template(data);
+	// 	$(result).insertAfter($a2);
+	// }
 	/*
 		todo
 			init
@@ -80,5 +85,6 @@ var hb = function () {
 		init : _init,
 		combine_replace : _combine_replace,
 		combine_append : _combine_append,
+		// add_tip : _add_tip,
 	}
 }()

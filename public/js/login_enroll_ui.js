@@ -1,10 +1,10 @@
 var login_enroll_ui = function () {
 	var $form;
-	var _hb;
 	var $frame;
 	var $enroll;
-	function _init(hb) {
-		_hb = hb;
+	var _io;
+	function _init(io) {
+		_io = io;
 		_cache();
 		_bindEvent();
 		return this;
@@ -24,7 +24,8 @@ var login_enroll_ui = function () {
 				success : function (data) {
 					if (data.verify) {
 						$frame.slideToggle(1000);
-						char_ui.open();	
+						char_ui.open();
+						_io.emit('login_success',data.user);
 					}
 				},
 				beforeSend : function () {
@@ -37,7 +38,7 @@ var login_enroll_ui = function () {
 			return false;
 		});
 		$enroll.click(function () {
-			enroll_ui.init(_hb);
+			enroll_ui.init();
 		});
 	}
 	function _cache() {

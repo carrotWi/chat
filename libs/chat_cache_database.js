@@ -1,13 +1,29 @@
 var module = require('./chat_module.js');
+var color = require('colors');
 var cache_database = {
 	rooms : [],
 	users : [], 
 	msgs : [],
 }
-function _add_user(id,name) {
+
+function test_print() {
+	Object.keys(cache_database).forEach(function (key) {
+		console.log(key.red + ' : \n');
+		var arr = cache_database[key];
+		for (var i = 0; i < arr.length; i++) {
+			var obj = arr[i];
+			Object.keys(obj).forEach(function (ke) {
+				console.log('\t' + ke + ' : ' + obj[ke] + '\n\n');
+			});
+		}
+	});
+}
+
+function _add_user(id,name,password) {
 	var users = cache_database.users;
-	var user = new module.User(id,name);
+	var user = new module.User(id,name,password);
 	users.push(user);
+	test_print();
 	return user;
 }
 function _add_msg(text,username,time,room) {

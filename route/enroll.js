@@ -33,8 +33,10 @@ module.exports = function (req,res) {
 				res.end(JSON.stringify(obj));
 			}else{
 				res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
+				var name = post.name;
 				var obj = {
 						enroll : true,
+						name : name,
 					}
 				chat_database.add(post);
 				res.end(JSON.stringify(obj));

@@ -1,10 +1,6 @@
-var login_enroll_ui = function () {
-	var $form;
-	var _hb;
-	var $frame;
-	var $enroll;
-	function _init(hb) {
-		_hb = hb;
+var tip_ui = function () {
+	var $tip;
+	function _init() {
 		_cache();
 		_bindEvent();
 		return this;
@@ -13,58 +9,74 @@ var login_enroll_ui = function () {
 		console.log(msg);
 	}
 	function _bindEvent() {
-		$form.submit(function (event) {
-			event.preventDefault();
-			var $that = $(this);
-			var opt = {
-				type : $that.attr('method'),
-				url : $that.attr('action'),
-				data : $that.serialize(),  
-				dataType: "json", 
-				success : function (data) {
-					if (data.verify) {
-						$frame.slideToggle(1000);
-						char_ui.open();	
-					}
-				},
-				beforeSend : function () {
-				},
-			}
-			$.ajax(opt)
-			.done(function() { log("success"); })
-    		.fail(function() { log("fail"); })
-    		.always(function() { log("complete"); });
-			return false;
-		});
-		$enroll.click(function () {
-			enroll_ui.init(_hb);
-		});
+
 	}
 	function _cache() {
-		$form = $('#login_enroll');
-		$frame = $('#login_enroll_frame');
-		$enroll = $('#enroll');
+		$tip = $('#tip');
 	}
-	function _add(name) {
-		var data = {
-			users : [{name : name}],
-		}
-		hb.combine_append($tem_user,$users,data);
+	function _switch(classname,msg) {
+		var class_arr = ['alert',classname];
+		$tip.attr('class',class_arr.join(' '));
+		$tip.html(msg);
 	}
-	function _remove(name) {
-		var $user = $users.children();
-		$user.each(function (index,item) {
-			if ($(item).html() === name) {
-				$(item).remove();
+	function _warn(msg) {
+		var classname = 'alert-warning';
+		var msg = msg || '警告';
+		_switch(classname,msg);
+	}
+	function _success(msg) {
+		var classname = 'alert-success';
+		var msg = msg || '成功';
+		_switch(classname,msg);
+	}
+	function _fail(msg) {
+		var classname = 'alert-danger';
+		var msg = msg || '失败';
+		_switch(classname,msg);
+	}
+	// function _show(flag) {
+	// 		$tip.slideToggle("slow");
+	// 		switch(flag) {
+	// 			case 'warn':
+	// 				_warn();
+	// 				break;
+	// 			case 'success':
+	// 				_success();
+	// 				break;
+	// 			case 'fail':
+	// 				_fail();
+	// 				break;
+	// 		}
+	// 	}
+	
+	function _trun(flag,msg) {
+		$tip.slideToggle("fast");
+		setTimeout(function () {
+			$tip.slideToggle("slow");
+			switch(flag) {
+				case 'warn':
+					_warn(msg);
+					break;
+				case 'success':
+					_success(msg);
+					break;
+				case 'fail':
+					_fail(msg);
+					break;
 			}
-		});
+		},500);
+		setTimeout(function () {
+			$tip.slideToggle("slow");
+		},4000);
+		// debugger
+		
 	}
 	/*
 		todo
-			add
-			remove
+			trun
 	 */
 	return {
 		init : _init,
+		trun : _trun,
 	}
 }();

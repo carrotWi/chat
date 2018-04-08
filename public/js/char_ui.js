@@ -13,6 +13,7 @@ var char_ui = function () {
 		_cache();
 		_bindEvent();
 		$send.attr('disabled','disabled');
+		//收到聊天记录
 		if (msg_list) {
 			for (var i = 0; i < msg_list.length; i++) {
 				var msg = msg_list[i];
@@ -62,6 +63,12 @@ var char_ui = function () {
 		_hb.combine_append($tem_msg,$msgs,data);
 		__io.send(context);
 	}
+	function _append(context) {
+		var data = {
+			msgs : [{name : '管理员' , text : context,}]
+		}
+		_hb.combine_append($tem_msg,$msgs,data);
+	}
 	/*
 		todo
 			send
@@ -73,5 +80,6 @@ var char_ui = function () {
 		init : _init,
 		send : _add,
 		open : _open,
+		append : _append,
 	};
 }();

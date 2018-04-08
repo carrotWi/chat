@@ -35,6 +35,7 @@ module.exports = function (req,res) {
 					res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
 					var obj = {
 						verify : true,
+						user : result[0],
 					}
 					res.end(JSON.stringify(obj));
 				}else{

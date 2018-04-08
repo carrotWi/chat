@@ -17,6 +17,12 @@ var _io = function () {
 	function _once(event,handle) {
 		__io.once(event,handle);
 	}
+	function _emit(event,data) {
+		__io.emit(event,data);
+	}
+	function _get_io() {
+		return __io;
+	}
 	/*
 		todo
 			send
@@ -25,7 +31,9 @@ var _io = function () {
 	return {
 		init : _init,
 		on : _on,
+		emit : _emit,
 		once : _once,
 		send : _send,
+		get_io : _get_io,
 	}
 }();
