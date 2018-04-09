@@ -25,7 +25,9 @@ window.onload = function () {
 	_io.once('msg_list',function (data) {
 		char_ui.init(_io,hb,data);
 	});
-
+	_io.once('room_list',function (data) {
+		menu_room.init(_io,hb,data);
+	});
 	// hb.combine_append($('#msg'),$('#msgs'),data1);
 	// hb.combine_append($('#user'),$('#users'),data);
 	// hb.combine_append($('#user'),$('#users'),data);
@@ -54,8 +56,14 @@ var hb = function () {
 				return option.fn(value);
 			}).join(' ');
 		});
+		Handlebars.registerHelper('room_option',function (context,option) {
+			return context.map(function (value) {
+				return option.fn(value);
+			}).join(' ');
+		});
 		return this;
 	}
+
 	//$a1模板
 	function _combine_replace($a1,$a2,data) {
 		var template = Handlebars.compile($a1.html());
@@ -85,6 +93,6 @@ var hb = function () {
 		init : _init,
 		combine_replace : _combine_replace,
 		combine_append : _combine_append,
-		// add_tip : _add_tip,
+		
 	}
 }()

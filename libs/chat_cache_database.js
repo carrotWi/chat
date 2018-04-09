@@ -26,22 +26,20 @@ function _add_user(id,name,password) {
 	test_print();
 	return user;
 }
+function _add_room(id,name,maxsize) {
+	var rooms = cache_database.rooms;
+	var room = new module.Room(id,name,maxsize);
+	rooms.push(room);
+	test_print();
+	return room;
+}
 function _add_msg(text,username,time,room) {
 	var msgs = cache_database.msgs;
 	var msg = new module.Msg(text,username,time,room);
 	msgs.push(msg);
 	return msg;
 }
-function _add_room(id,count,name) {
-	var rooms = cache_database.rooms;
-	var room = {
-		id : id,
-		count : count,
-		name : name,
-	};
-	rooms.push(room);
-	return room;
-}
+
 function _add(table) {
 	var result;
 	var args = _slice(arguments,1);
@@ -120,19 +118,31 @@ function _delete(table) {
 			}
 			return result;
 }
-function _all_users() {
+function _all_users(callback) {
+	if (callback) {
+		return callback(cache_database.users)
+	}
 	return cache_database.users;
 }
-function _all_msgs() {
+function _all_msgs(callback) {
+	if (callback) {
+		return callback(cache_database.msgs)
+	}
 	return cache_database.msgs;
+}
+function _all_rooms(callback) {
+	if (callback) {
+		return callback(cache_database.rooms)
+	}
+	return cache_database.rooms;
 }
 function _all(table) {
 	var result;
 			var args = _slice(arguments,1);
 			switch(table) {
-				// case 'rooms':
-				// 	_add_room.apply(null,args);
-				// 	break;
+				case 'rooms':
+					_all_rooms.apply(null,args);
+					break;
 				case 'users':
 					result =  _all_users.apply(null,args);
 					break;

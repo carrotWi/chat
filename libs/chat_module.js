@@ -10,6 +10,12 @@ function _User(id,name,password,socket) {
 	this.password = password;
 	this.socket = socket;
 }
+function Room(id,name) {
+	this.id = id;
+	this.name = name;
+	this.size = 0;
+	this.maxsize = 10;
+}
 exports.Msg = _Msg;
 exports.User = _User;
-	
+exports.Room = Room;

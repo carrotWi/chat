@@ -5,15 +5,16 @@
 	<title>Bootstrap 实例 - 表单控件状态</title>
 	<link rel="stylesheet" href="../public/css/bootstrap.css">  
 	<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
-
 	<script type="text/javascript" src="../public/js/handlebars-v4.0.11.js"></script>
 	<script src="../public/js/jquery-3.3.1.js"></script>
 	<script src="../public/js/bootstrap.js"></script>
 	<script src="../public/js/socket.io.dev.js"></script>
 	<script src="../public/libs/jquery-validation-1.17.0/dist/jquery.validate.js"></script>
+	<script src="../public/libs/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
 	<!-- 中文提示包 -->
 	<script src="../public/libs/jquery-validation-1.17.0/dist/localization/messages_zh.js"></script>
 	<!--  -->
+	<script src="../public/js/menu_room.js"></script>
 	<script src="../public/js/_io.js"></script>
 	<script src="../public/js/tip_ui.js"></script>
 	<script src="../public/js/login_enroll_ui.js"></script>
@@ -31,11 +32,10 @@
 		<p class="user">{{name}}</p>
 		{{/user_p}}
 	</script>
-	<script type="text/x-handlebars" id="success">
-		
-	</script>
-	<script type="text/x-handlebars" id="room">
-		
+	<script type="text/x-handlebars" id="room_item">
+		{{#room_option rooms}}
+		<option>{{name}}</option>
+		{{/room_option}}
 	</script>
 	<!-- <script type="text/x-handlebars" id="tip">
 		<div class="alert {{class}}">{{msg}}</div>
@@ -85,13 +85,13 @@
 				<form role="form" class="form-horizontal" id="chat">
 					<div class="form-horizontal">
 						<input type="text" name="msg" class="form-control" autocomplete="off" id="context_msg">
-						<button type="submit" class="btn btn-primary" id="send_msg" disabled="disabled">
+						<button type="submit" class="btn btn-primary btn-block" id="send_msg" disabled="disabled">
 							<span class="">发送</span>
 						</button>
-						<!--  -->
-						<button class="btn btn-primary dropdown-toggle">
-							房间
-						</button>
+						<!-- 房间选择 -->
+						<select id="menu_room">
+							<option>公共</option>
+						</select>
 						<!--  -->
 					</div>				
 				</form>

@@ -7,11 +7,17 @@ module.exports = function (server) {
 		服务器打开
 			初始化一个房间 --> name : public
 	 */
+	function get_room_id() {
+		var date = new Date().getTime();
+		var hash = Math.floor(Math.random() * 10) * 17;
+		return hash + date;
+	}
+	chat_cache_database.add('rooms',get_room_id(),'公共');
 	// id count name
 	 // chat_cache_database.add(1,0,'public');
 	 io.on('connection',function (socket) {
 	 	//id name
-	 	// var user = chat_cache_database.add('users',socket.id,socket.id);
+	 	//var user = chat_cache_database.add('users',socket.id,socket.id);
 	 	//加入一个房间
 	 	// _join_room(socket,user);
 	 	//把房间历史记录发给这个用户
@@ -21,9 +27,15 @@ module.exports = function (server) {
 	 	handle_login_success(socket);
 	 	//这个游客离开了
 	 	socket.on('disconnect',function () {
-	 		console.log('这个游客离开了');
+	 		console.log('这个游客离开了'.red);
 	 	});
 	 });
+	 function _send_rooms_list(socket) {
+	 	//发送房间列表
+	 	var rooms = chat_cache_database.all('rooms',function (rooms) {
+	 		socket.emit('room_list',rooms);
+	 	});
+	 }
 	 function _disconnect_handle(socket,user) {
 	 	//缓存中删除这个用户
 	 	var result = chat_cache_database.delete('users','id',socket.id);
@@ -33,6 +45,8 @@ module.exports = function (server) {
 	 function handle_login_success(socket) {
 	 	//user-->json
 	 	socket.on('login_success',function (user) {
+	 		//发送房间列表
+	 		_send_rooms_list(socket);
 	 		//转发这个用户的消息
 	 		handle_msg(socket);	 		
 	 		var user = chat_cache_database.add('users',socket.id,user.name,user.password);
