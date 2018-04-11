@@ -8,13 +8,13 @@ var menu_room = function () {
 		_io = io;
 		_cache();
 		_bindEvent();
-		if (romm_list) {
-			for (var i = 0; i < romm_list.length; i++) {
-				var room = romm_list[i];
-				var data = room;
-				_show_room_handle(room);
-			}
-		}
+		// if (romm_list) {
+		// 	for (var i = 0; i < romm_list.length; i++) {
+		// 		var room = romm_list[i];
+		// 		var data = room;
+				_show_room_handle(romm_list);
+		// 	}
+		// }
 		return this;
 	}
 
@@ -22,10 +22,11 @@ var menu_room = function () {
 		
 	}
 
-	function _show_room_handle(room) {
+	function _show_room_handle(romm_list) {
 		var data = {
-			rooms : [room],
+			rooms : romm_list,
 		}
+		debugger
 		_hb.combine_replace($template,$select,data);
 	}
 

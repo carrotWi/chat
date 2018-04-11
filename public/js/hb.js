@@ -23,6 +23,7 @@ window.onload = function () {
 		user_list_ui.init(_io,hb,data);
 	});
 	_io.once('msg_list',function (data) {
+		debugger
 		char_ui.init(_io,hb,data);
 	});
 	_io.once('room_list',function (data) {

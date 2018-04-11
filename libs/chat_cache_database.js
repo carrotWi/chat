@@ -19,65 +19,99 @@ function test_print() {
 	});
 }
 
-function _add_user(id,name,password) {
-	var users = cache_database.users;
-	var user = new module.User(id,name,password);
-	users.push(user);
-	test_print();
-	return user;
+function _add_user(id,name,password,socket_id,room_id,callback) {
+		var users = cache_database.users;
+		var user = new module.User(id,name,password,socket_id,room_id);
+		users.push(user);
+		if (callback) {
+			callback(null,user);
+		}
 }
-function _add_room(id,name,maxsize) {
-	var rooms = cache_database.rooms;
-	var room = new module.Room(id,name,maxsize);
-	rooms.push(room);
-	test_print();
-	return room;
+function _add_room(id,name,space,callback) {
+		var rooms = cache_database.rooms;
+		var room = new module.Room(id,name,space);
+		rooms.push(room);
+		if (callback) {
+			callback(null,room);
+		}
+	
 }
-function _add_msg(text,username,time,room) {
-	var msgs = cache_database.msgs;
-	var msg = new module.Msg(text,username,time,room);
-	msgs.push(msg);
-	return msg;
+//id,text,user_id,time,room_id
+function _add_msg(id,text,user_id,time,room_id,callback) {
+		var msgs = cache_database.msgs;
+		var msg = new module.Msg(id,text,user_id,time,room_id);
+		msgs.push(msg);
+		if (callback) {
+			callback(null,msg);
+		}
 }
 
 function _add(table) {
-	var result;
 	var args = _slice(arguments,1);
 	switch(table) {
 		case 'rooms':
-			 result = _add_room.apply(null,args);
+			_add_room.apply(null,args);
 			break;
 		case 'users':
-			 result = _add_user.apply(null,args);
+			_add_user.apply(null,args);
 			break;
 		case 'msgs':
-			 result = _add_msg.apply(null,args);
+			_add_msg.apply(null,args);
 			break;
 	}
-	return result;
+	test_print();
 }
-function _select_user(okey,ovalue) {
-	var users = cache_database.users;
-	var result = [];
-	for(var user of users){
-		if(user[okey] === ovalue && okey != undefined){
-			result.push(user);
+function _select_users(okey,ovalue,callback) {
+		var users = cache_database.users;
+		var result = [];
+		for(var user of users){
+			if(user[okey] === ovalue && okey != undefined){
+				result.push(user);
+			}
 		}
-	}
-	return result;
+		if (callback) {
+			callback(null,result);
+		}
+	
+}
+function _select_msgs(okey,ovalue,callback) {
+		var msgs = cache_database.msgs;
+		var result = [];
+		for(var msg of msgs){
+			if(msg[okey] === ovalue && okey != undefined){
+				result.push(msg);
+			}
+		}
+		if (callback) {
+			callback(null,result);
+		}
+	
+}
+function _select_rooms(okey,ovalue,callback) {
+		var msgs = cache_database.rooms;
+		var result = [];
+		for(var msg of msgs){
+			if(msg[okey] === ovalue && okey != undefined){
+				result.push(msg);
+			}
+		}
+		if (callback) {
+			callback(null,result);
+		}
 }
 function _select(table) {
-	var result;
 	var args = _slice(arguments,1);
 	switch(table) {
-		// case 'rooms':
-		// 	_add_room.apply(null,args);
-		// 	break;
+		case 'rooms':
+			_select_rooms.apply(null,args);
+			break;
+		case 'msgs':
+			_select_msgs.apply(null,args);
+			break;
 		case 'users':
-			result =  _select_user.apply(null,args);
+			_select_users.apply(null,args);
 			break;
 	}
-	return result;
 }
 function _slice(obj,index) {
 	var result = [];
@@ -86,14 +120,15 @@ function _slice(obj,index) {
 	}
 	return result;
 }
-function _delete_user(okey,ovalue) {
-	var user = _select_user(okey,ovalue)[0];
-	var users = cache_database.users;
-	if (!user) {
-		return false;
-	}
-	cache_database.users = _delete_arr(users,user);
-	return true;
+function _delete_user(okey,ovalue,callback) {
+	_select_users(okey,ovalue,function (err,users) {
+			var arr = cache_database.users;
+			cache_database.users = _delete_arr(arr,users[0]);
+			if (callback) {
+			 	callback(null);
+			 } 
+		
+	})
 }
 function _delete_arr(arr,obj) {
 	var result = [];
@@ -106,51 +141,46 @@ function _delete_arr(arr,obj) {
 	return result
 }
 function _delete(table) {
-	var result = false;
+
 			var args = _slice(arguments,1);
 			switch(table) {
 				// case 'rooms':
 				// 	_add_room.apply(null,args);
 				// 	break;
 				case 'users':
-					result =  _delete_user.apply(null,args);
+				 _delete_user.apply(null,args);
 					break;
 			}
-			return result;
+
 }
 function _all_users(callback) {
 	if (callback) {
-		return callback(cache_database.users)
+		return callback(null,cache_database.users)
 	}
-	return cache_database.users;
 }
 function _all_msgs(callback) {
 	if (callback) {
-		return callback(cache_database.msgs)
+		return callback(null,cache_database.msgs)
 	}
-	return cache_database.msgs;
 }
 function _all_rooms(callback) {
 	if (callback) {
-		return callback(cache_database.rooms)
+		return callback(null,cache_database.rooms)
 	}
-	return cache_database.rooms;
 }
 function _all(table) {
-	var result;
 			var args = _slice(arguments,1);
 			switch(table) {
 				case 'rooms':
 					_all_rooms.apply(null,args);
 					break;
 				case 'users':
-					result =  _all_users.apply(null,args);
+					_all_users.apply(null,args);
 					break;
 				case 'msgs':
-					 result = _all_msgs.apply(null,args);
+					_all_msgs.apply(null,args);
 					break;
 			}
-			return result;
 }
 exports.all = _all;
 exports.delete = _delete;
