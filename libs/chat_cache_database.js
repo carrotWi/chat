@@ -1,10 +1,19 @@
 var module = require('./chat_module.js');
 var color = require('colors');
+var mongodb = require('mongodb');
+var async = require('async');
+const url = 'mongodb://localhost:27017';
+const dbName = 'test';
+const DOCUMENT = ['rooms'];
+const MongoClient = mongodb.MongoClient;
 var cache_database = {
 	rooms : [],
 	users : [], 
 	msgs : [],
 }
+
+
+
 
 function test_print() {
 	Object.keys(cache_database).forEach(function (key) {
@@ -144,9 +153,6 @@ function _delete(table) {
 
 			var args = _slice(arguments,1);
 			switch(table) {
-				// case 'rooms':
-				// 	_add_room.apply(null,args);
-				// 	break;
 				case 'users':
 				 _delete_user.apply(null,args);
 					break;
@@ -182,7 +188,136 @@ function _all(table) {
 					break;
 			}
 }
-exports.all = _all;
-exports.delete = _delete;
-exports.add = _add;
-exports.select = _select;
+
+function _select_(table,opt,fn) {
+	var args = _slice(arguments,1);
+	async.waterfall([
+			function (callback) {
+				MongoClient.connect(url,function (err,client) {
+					var db = client.db(dbName);
+					callback(err,db);
+				});
+			},
+			function (db,callback) {
+				var collection = db.collection(table);
+				collection.find(opt).toArray(function (err,result) {
+					callback(err,result,db);
+				});
+			}
+		],function (err,result,db) {
+			if (err) {
+				throw err;
+			}
+			fn(err,result);
+			// db.close();
+
+	});
+}
+
+function _add_(table,arr,fn) {
+	var args = _slice(arguments,1);
+	async.waterfall([
+			function (callback) {
+				MongoClient.connect(url,function (err,client) {
+					var db = client.db(dbName);
+					debugger
+					callback(err,db);
+				});
+			},
+			function (db,callback) {
+				var collection = db.collection(table);
+				collection.insertMany(arr,function (err,result) {
+					debugger
+					callback(err,result,db);
+				});
+			}
+		],function (err,result,db) {
+			if (err) {throw err;}
+			fn(err,result);
+			// db.close();		
+	});
+	
+}
+
+function _all_(table,fn) {
+	var args = _slice(arguments,1);
+	async.waterfall([
+			function (callback) {
+				MongoClient.connect(url,function (err,client) {
+					var db = client.db(dbName);
+					callback(err,db);
+				});
+			},
+			function (db,callback) {
+				var collection = db.collection(table);
+				collection.find({}).toArray(function (err,result) {
+					callback(err,result,db);
+				});
+			}
+		],function (err,result,db) {
+			if (err) {
+				throw err;
+			}
+			fn(err,result);
+			// db.close();
+	});
+	
+}
+
+function _delete_(table,opt,fn) {
+	var args = _slice(arguments,1);
+	async.waterfall([
+			function (callback) {
+				MongoClient.connect(url,function (err,client) {
+					var db = client.db(dbName);
+					callback(err,db);
+				});
+			},
+			function (db,callback) {
+				var collection = db.collection(table);
+				collection.deleteOne(opt),function (err,result) {
+					callback(err,result,db);
+				};
+			}
+		],function (err,result,db) {
+			if (err) {
+				throw err;
+			}
+			fn(err,result);
+			// db.close();
+	});
+}
+
+//删光
+function _clean_() {
+		async.waterfall([
+			function (callback) {
+				MongoClient.connect(url,function (err,client) {
+					var db = client.db(dbName);
+					callback(err,db);
+				});
+			},
+			function (db,callback) {
+				var arr = ['rooms'];
+				for (var i = 0; i < arr.length; i++) {
+					var collection = db.collection(arr[i]);
+					debugger
+					collection.deleteMany({},function (err,result) {
+						callback(err,result,db);
+					});
+				}
+				
+			}
+		],function (err,result,db) {
+			if (err) {
+				throw err;
+			}
+			console.log(result);
+			// db.close();
+	});
+}
+exports.clean = _clean_;
+exports.all = _all_;
+exports.delete = _delete_;
+exports.add = _add_;
+exports.select = _select_;
