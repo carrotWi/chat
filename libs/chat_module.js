@@ -1,25 +1,67 @@
-function _Msg(id,text,user_id,time,room_id) {
-	this.text = text || '';
-	this.user_id = user_id || '';
-	this.time = time || '';
-	this.room_id = room_id || '';
-	this.id = id;
+function _Msg() {
+	this.text;
+	this.user_id;
+	this.time = format_time(new Date());
+	this.room_id;
+	this.room_space;
+	this.id;
 }
-function _User(id,name,password,socket_id,room_id) {
-	this.socket_id = socket_id;
-	this.name = name;
-	this.room_id = room_id; 
-	this.password = password;
-	this.id = id;
+_Msg.prototype.init = function (opt) {
+	for (var key in opt) {
+		if (opt.hasOwnProperty(key)) {
+			this[key] = opt[key];
+		}
+	}
+	return this;
 }
-function Room(id,name,space) {
-	this.id = id;
-	this.name = name;
-	this.space = space || '/';
-	this.size = 0;
+function format_time(date) {
+	date = {
+		year : date.getFullYear(),
+		month : date.getMonth() + 1,
+		day : date.getDay(),
+		hours : date.getHours(),
+		minutes : date.getMinutes(),
+		seconds : date.getSeconds(),
+	}
+	var left = [date.year,date.month,date.day];
+	var right = [date.hours,date.minutes,date.seconds];
+	var all = [left.join('-'),right.join(':')];
+	var str = all.join(' ');
+	return str;
+};
+function _User() {
+	this.socket_id;
+	this.name;
+	this.room_id;
+	this.password;
+	this.time = format_time(new Date());
+	this.alias;
+	this.id;
+}
+_User.prototype.init = function (opt) {
+	for (var key in opt) {
+		if (opt.hasOwnProperty(key)) {
+			this[key] = opt[key];
+		}
+	}
+	return this;
+}
+function _Room() {
+	this.id ;
+	this.name;
+	this.space;
+	this.size =0;
 	this.maxsize = 10;
-	this.users = [];
+	this.time = format_time(new Date());
+}
+_Room.prototype.init = function (opt) {
+	for (var key in opt) {
+		if (opt.hasOwnProperty(key)) {
+			this[key] = opt[key];
+		}
+	}
+	return this;
 }
 exports.Msg = _Msg;
 exports.User = _User;
-exports.Room = Room;
+exports.Room = _Room;

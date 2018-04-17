@@ -30,18 +30,23 @@ module.exports = function (req,res) {
 				req.params[key] = params[key];
 			});
 			var post = req.params;
-			chat_database.verify(post,function (result) {
-				if (result.length) {
+			chat_database.verify(post,function (err,result) {
+				debugger
+				if (err) {
+					throw err;
+					return;
+				}
+				if (result) {
 					res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
 					var obj = {
-						verify : true,
-						user : result[0],
+						verify : result,
+						user : post.name,
 					}
 					res.end(JSON.stringify(obj));
 				}else{
 					res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
 					var obj = {
-						verify : false,
+						verify : result,
 					}
 					res.end(JSON.stringify(obj));
 				}

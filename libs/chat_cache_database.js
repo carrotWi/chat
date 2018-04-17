@@ -1,127 +1,509 @@
-var module = require('./chat_module.js');
+const m = require('../libs/chat_module.js');
 var color = require('colors');
-var mongodb = require('mongodb');
+var mysql = require('mysql');
 var async = require('async');
-const url = 'mongodb://localhost:27017';
-const dbName = 'test';
-const DOCUMENT = ['rooms'];
-const MongoClient = mongodb.MongoClient;
-var cache_database = {
-	rooms : [],
-	users : [], 
-	msgs : [],
-}
 
 
+var opt = opt || {
+	host : 'localhost',
+	user : 'root',
+	password : 'root',
+	database : 'chat',
+};
 
+var connection = mysql.createConnection(opt);
+connection.connect();
 
-function test_print() {
-	Object.keys(cache_database).forEach(function (key) {
-		console.log(key.red + ' : \n');
-		var arr = cache_database[key];
-		for (var i = 0; i < arr.length; i++) {
-			var obj = arr[i];
-			Object.keys(obj).forEach(function (ke) {
-				console.log('\t' + ke + ' : ' + obj[ke] + '\n\n');
-			});
-		}
-	});
-}
-
-function _add_user(id,name,password,socket_id,room_id,callback) {
-		var users = cache_database.users;
-		var user = new module.User(id,name,password,socket_id,room_id);
-		users.push(user);
-		if (callback) {
-			callback(null,user);
-		}
-}
-function _add_room(id,name,space,callback) {
-		var rooms = cache_database.rooms;
-		var room = new module.Room(id,name,space);
-		rooms.push(room);
-		if (callback) {
-			callback(null,room);
-		}
+/*=============================================
+=            add         =
+=============================================*/
+//增加一个user
+function _add_user(user,cb) {
+	//密码和用户名是必需的
+	if (user.name && user.password ) {
+		async.waterfall([
+				function (callback) {
+					//存id name 和 password
+					var value = [user.name,user.password];
+					var sql = 'INSERT INTO user_name_password (name,password) VALUES (?,?);';
+					connection.query(sql,value,function (err,result,filed) {
+						callback(err,result,filed);
+					});
+				},
+				function (result,filed,callback) {
+					user.id = result.insertId;
+					//存 enroll_time
+					var value = [user.id,user.time];
+					var sql = 'INSERT INTO user_enroll_time (user_id,time) VALUES (?,?);';
+					connection.query(sql,value,function (err,result,filed) {
+						callback(err,result,filed);
+					});
+				},
+				function (result,filed,callback) {
+					// 存 login_time
+					var value = [user.id,user.time];
+					var sql = 'INSERT INTO user_login_time (user_id,time) VALUES (?,?);';
+					connection.query(sql,value,function (err,result,filed) {
+						callback(err,result,filed);
+					});
+				},
+				function (result,filed,callback) {
+					//存 sex
+					if (!user.sex) {
+						user.sex = 'none';
+					}
+					var value = [user.id,user.sex];
+					var sql = 'INSERT INTO user_sex (user_id,sex) VALUES (?,?);';
+					connection.query(sql,value,function (err,result,filed) {
+						callback(err,result,filed);
+					});
+				},
+				function (result,filed,callback) {
+					//存 age
+					if (!user.age) {
+						user.age = 0;
+					}
+					var value = [user.id,user.age];
+					var sql = 'INSERT INTO user_age (user_id,age) VALUES (?,?);';
+					connection.query(sql,value,function (err,result,filed) {
+						callback(err,result,filed);
+					});
+				},
+				function (result,filed,callback) {
+					// 存 room
+					if (!user.room_id) {
+						user.room_id = 0;
+					}
+					var value = [user.id,user.room_id];
+					var sql = 'INSERT INTO user_room (user_id,room_id) VALUES (?,?);';
+					connection.query(sql,value,function (err,result,filed) {
+						callback(err,result,filed);
+					});
+				},
+				function (result,filed,callback) {
+					//存 alias
+					if (!user.alias) {
+						user.alias = user.name;
+					}
+					var value = [user.id,user.alias];
+					var sql = 'INSERT INTO user_alias (user_id,alias) VALUES (?,?);';
+					connection.query(sql,value,function (err,result,filed) {
+						callback(err,result,filed);
+					});
+				},
+				function (result,filed,callback) {
+					//存 socket_id
+					user.socket_id = '';
+					var value = [user.id,user.socket_id];
+					var sql = 'INSERT INTO user_socket (user_id,socket_id) VALUES (?,?);';
+					connection.query(sql,value,function (err,result,filed) {
+						callback(err,result,filed);
+					});
+				}
+			],function (err,result,filed) {
+				if (cb) {
+					if (err) {
+						cb(err);
+						return;
+					}
+					cb(null,user);
+				}
+		});
+	} else {
+		var err = new Error('name or password  undefined ');
+		cb(err)
+	}
 	
 }
-//id,text,user_id,time,room_id
-function _add_msg(id,text,user_id,time,room_id,callback) {
-		var msgs = cache_database.msgs;
-		var msg = new module.Msg(id,text,user_id,time,room_id);
-		msgs.push(msg);
-		if (callback) {
-			callback(null,msg);
+//增加一个room
+function _add_room(room,cb) {
+		// var room = new m.Room(name,space);
+		if (room.space && room.name) {
+			async.waterfall([
+					function (callback) {
+						//存 spac
+						var value = [room.space];
+						var sql = 'INSERT INTO room_space (space) VALUES (?);';
+						connection.query(sql,value,function (err,result,filed) {
+							callback(err,result,filed);
+						});
+					},
+					function (result,filed,callback) {
+						// 存 name
+						room.id = result.insertId;
+						var value = [room.id,room.name];
+						var sql = 'INSERT INTO room_name (room_id,name) VALUES (?,?);';
+						connection.query(sql,value,function (err,result,filed) {
+							callback(err,result,filed);
+						});
+					},
+					function (result,filed,callback) {
+						// 存 time
+						var value = [room.id,room.time];
+						var sql = 'INSERT INTO room_create_time (room_id,time) VALUES (?,?);';
+						connection.query(sql,value,function (err,result,filed) {
+							callback(err,result,filed);
+						});
+					}
+				],function (err,result,filed) {
+					if (err) {
+						cb(err);
+						return;
+					}
+					if (cb) {
+						cb(null,room);
+					}
+			});
+		} else {
+			var err = new Error('space name');
+			cb(err);
 		}
+}
+//加入一条消息
+function _add_msg(msg,cb) {
+	if (msg.user_id && msg.text && msg.room_id) {
+		async.waterfall([
+				function (callback) {
+					//存text
+					var value = [msg.text];
+					var sql = 'INSERT INTO msg_text (text) VALUES (?);';
+					connection.query(sql,value,function (err,result,filed) {
+						callback(err,result,filed);
+					});
+				},
+				function (result,filed,callback) {
+					// 存room_id
+					msg.id = result.insertId;
+					var value = [msg.id,msg.room_id];
+					var sql = 'INSERT INTO msg_room (msg_id,room_id) VALUES (?,?);';
+					connection.query(sql,value,function (err,result,filed) {
+						callback(err,result,filed);
+					});
+				},
+				function (result,filed,callback) {
+					//存time
+					var value = [msg.id,msg.time];
+					var sql = 'INSERT INTO msg_time (msg_id,time) VALUES (?,?);';
+					connection.query(sql,value,function (err,result,filed) {
+						callback(err,result,filed);
+					});
+				},
+				function (result,filed,callback) {
+					//存user_id
+					var value = [msg.id,msg.user_id];
+					var sql = 'INSERT INTO msg_user (msg_id,user_id) VALUES (?,?);';
+					connection.query(sql,value,function (err,result,filed) {
+						callback(err,result,filed);
+					});
+				}
+			],function (err,result,filed) {
+				if (err) {
+					cb(err);
+					return;
+				}
+				if (cb) {
+					cb(null,msg);
+				}
+		});
+	} else {
+		var err = new Error('user_id text room_id');
+		cb(err);
+	}	
 }
 
 function _add(table) {
 	var args = _slice(arguments,1);
 	switch(table) {
-		case 'rooms':
+		case 'room':
 			_add_room.apply(null,args);
 			break;
-		case 'users':
+		case 'user':
 			_add_user.apply(null,args);
 			break;
-		case 'msgs':
+		case 'msg':
 			_add_msg.apply(null,args);
 			break;
 	}
-	test_print();
 }
-function _select_users(okey,ovalue,callback) {
-		var users = cache_database.users;
-		var result = [];
-		for(var user of users){
-			if(user[okey] === ovalue && okey != undefined){
-				result.push(user);
-			}
-		}
-		if (callback) {
-			callback(null,result);
-		}
-	
-}
-function _select_msgs(okey,ovalue,callback) {
-		var msgs = cache_database.msgs;
-		var result = [];
-		for(var msg of msgs){
-			if(msg[okey] === ovalue && okey != undefined){
-				result.push(msg);
-			}
-		}
-		if (callback) {
-			callback(null,result);
-		}
-	
-}
-function _select_rooms(okey,ovalue,callback) {
-		var msgs = cache_database.rooms;
-		var result = [];
-		for(var msg of msgs){
-			if(msg[okey] === ovalue && okey != undefined){
-				result.push(msg);
-			}
-		}
-		if (callback) {
-			callback(null,result);
-		}
-}
-function _select(table) {
-	var args = _slice(arguments,1);
-	switch(table) {
-		case 'rooms':
-			_select_rooms.apply(null,args);
-			break;
-		case 'msgs':
-			_select_msgs.apply(null,args);
-			break;
-		case 'users':
-			_select_users.apply(null,args);
-			break;
+/*=====  End of add  ======*/
+
+
+
+/*=============================================
+=            update            =
+=============================================*/
+
+function _update_room(room,cb) {
+	if (room.id) {
+		async.series([
+				function (callback) {
+					//改 name
+					if (room.name) {
+						var value = [room.name,room.id];
+						var sql = 'UPDATE room_name SET name=? WHERE room_id=?;';
+						connection.query(sql,value,callback);
+					}
+				},
+			],function (err,results) {
+				if (err) {
+					cb(err);
+					return
+				}
+				if (cb) {
+					cb(null,room);
+				}
+			});
+	} else {
+		var err = new Error('id underfined');
+		cb(err);
 	}
 }
+
+function _update_user(user,cb) {
+	if (user.id) {
+			async.series([
+					function (callback) {
+						//改 age
+						if (user.age) {
+							var value = [user.age,user.id];
+							var sql = 'UPDATE user_age SET name=? WHERE user_id=?;';
+							connection.query(sql,value,callback);
+						} else {
+							callback(null,null,null);
+						}
+					},
+					function (callback) {
+						//改 alias
+						if (user.alias) {
+							var value = [user.alias,user.id];
+							var sql = 'UPDATE user_alias SET alias=? WHERE user_id=?;';
+							connection.query(sql,value,callback);
+						} else {
+							callback(null,null,null);
+						}
+					},
+					function (callback) {
+						//改 password
+						if (user.password) {
+							var value = [user.password,user.id];
+							var sql = 'UPDATE user_name_password SET password=? WHERE id=?;';
+							connection.query(sql,value,callback);
+						} else {
+							callback(null,null,null);
+						}
+					},
+					function (callback) {
+						//改 room_id
+						if (user.room_id) {
+							var value = [user.room_id,user.id];
+							var sql = 'UPDATE user_name_password SET room_id=? WHERE user_id=?;';
+							connection.query(sql,value,callback);
+						} else {
+							callback(null,null,null);
+						}
+					},
+					function (callback) {
+						//改 sex
+						if (user.sex) {
+							var value = [user.sex,user.id];
+							var sql = 'UPDATE user_sex SET sex=? WHERE user_id=?;';
+							connection.query(sql,value,callback);
+						} else {
+							callback(null,null,null);
+						}
+					},
+					function (callback) {
+						//改 enroll_time
+						if (user.enroll_time) {
+							var value = [user.enroll_time,user.id];
+							var sql = 'UPDATE user_enroll_time SET time=? WHERE user_id=?;';
+							connection.query(sql,value,callback);
+						} else {
+							callback(null,null,null);
+						}
+					}
+				],function (err,result) {
+					if (err) {
+						cb(err);
+						return
+					}
+					cb(null,user);
+				});
+		} else {
+			var err = new Error('id underfined');
+			cb(err);
+		}
+}
+
+/**
+
+	TODO:
+
+ */
+
+function _update_msg(msg,cb) {
+	if (msg.id) {
+			async.waterfall([
+					function (callback) {
+						
+					},
+					function (callback) {
+					}
+				],function (err) {
+					if (err) {
+						cb(err);
+						return
+					}
+					cb(null,msg);
+				});
+		} else {
+			var err = new Error('id underfined');
+			cb(err);
+		}
+}
+
+function _update(table) {
+	var args = _slice(arguments,1);
+			switch(table) {
+				case 'room':
+					_update_room.apply(null,args);
+					break;
+				case 'user':
+					_update_user.apply(null,args);
+					break;
+				case 'msg':
+					_update_msg.apply(null,args);
+					break;
+			}
+}
+
+/*=====  update  ======*/
+
+
+/*========================
+=          End of  all            =
+========================*/
+
+function _all_user(cb) {
+	async.waterfall([
+			function (callback) {
+				var sql = 'SELECT user_name_password.*,user_age.age,user_sex.sex,user_alias.alias,user_login_time.time AS login_time,user_enroll_time.time AS enroll_time FROM (user_name_password INNER JOIN (user_age INNER JOIN (user_sex INNER JOIN (user_alias INNER JOIN (user_login_time INNER JOIN user_enroll_time ON user_enroll_time.user_id=user_login_time.user_id) ON user_alias.user_id=user_login_time.user_id) ON user_alias.user_id=user_sex.user_id) ON user_age.user_id=user_sex.user_id) ON user_name_password.id=user_age.user_id);';
+				connection.query(sql,callback);
+			},
+			function (result,field,callback) {
+				var users = [];
+				result.forEach(function (item) {
+					var u = new m.User().init(item);
+					users.push(u);
+				});
+				callback(null,users);
+			}
+		],function (err,users) {
+			if (cb) {
+				if (err) {
+					cb(err);
+					return
+				}
+				cb(null,users);
+			}
+	});
+}
+
+function _all_room(cb) {
+ 	async.waterfall([
+			function (callback) {
+				var sql = 'SELECT' +
+						' room_space.id,' +
+						' room_space.space,' +
+						' room_name.name,' +
+						' room_create_time.time' +
+						' FROM' +
+						' (room_space INNER JOIN' +
+						' (room_name INNER JOIN room_create_time ' +
+						' ON room_name.room_id=room_create_time.room_id)' +
+						' ON room_space.id=room_name.room_id);';
+				connection.query(sql,callback);
+			},
+			function (result,field,callback) {
+				var rooms = [];
+				result.forEach(function (item) {
+					var r = new m.Room().init(item);
+					rooms.push(r);
+				});
+				callback(null,rooms);
+			}
+		],function (err,rooms) {
+			if (cb) {
+				if (err) {
+					cb(err);
+					return
+				}
+				cb(null,rooms);
+			}
+	});
+}
+
+function _all_msg(cb) {
+	async.waterfall([
+				function (callback) {
+					var sql = 'SELECT msg_text.id,msg_room.room_id,msg_text.text,msg_time.time,room_name.name FROM (room_name INNER JOIN (msg_room INNER JOIN  (msg_text INNER JOIN  (msg_time INNER JOIN msg_user  ON msg_time.msg_id=msg_user.msg_id) ON msg_text.id=msg_time.msg_id) ON msg_room.msg_id=msg_text.id) ON msg_room.room_id=room_name.room_id);';
+					connection.query(sql,callback);
+				},
+				function (result,field,callback) {
+					var msgs = [];
+					result.forEach(function (item) {
+						var u = new m.Msg().init(item);
+						msgs.push(u);
+					});
+					callback(null,msgs);
+				}
+			],function (err,msgs) {
+				if (cb) {
+					if (err) {
+						cb(err);
+						return
+					}
+					cb(null,msgs);
+				}
+		});
+}
+
+function _all(table) {
+	var args = _slice(arguments,1);
+			switch(table) {
+				case 'room':
+					_all_room.apply(null,args);
+					break;
+				case 'user':
+					_all_user.apply(null,args);
+					break;
+				case 'msg':
+					_all_msg.apply(null,args);
+					break;
+			}
+}
+
+/*=====  End of all  ======*/
+
+
+/**
+
+	TODO:
+
+ */
+
+// exports.clean = _clean_;
+// exports.delete = _delete;
+exports.add = _add;
+// exports.save = _save;
+// exports.select = _select;
+exports.update = _update;
+exports.all = _all;
+
+/*=============================================
+=            Section tools            =
+=============================================*/
+
 function _slice(obj,index) {
 	var result = [];
 	for (var i = index; i < obj.length; i++) {
@@ -129,195 +511,7 @@ function _slice(obj,index) {
 	}
 	return result;
 }
-function _delete_user(okey,ovalue,callback) {
-	_select_users(okey,ovalue,function (err,users) {
-			var arr = cache_database.users;
-			cache_database.users = _delete_arr(arr,users[0]);
-			if (callback) {
-			 	callback(null);
-			 } 
-		
-	})
-}
-function _delete_arr(arr,obj) {
-	var result = [];
-	for (var i = 0; i < arr.length; i++) {
-		var user = arr[i];
-		if (obj.id !== user.id) {
-			result.push(user);
-		}
-	}
-	return result
-}
-function _delete(table) {
 
-			var args = _slice(arguments,1);
-			switch(table) {
-				case 'users':
-				 _delete_user.apply(null,args);
-					break;
-			}
+/*=====  End of Section tools  ======*/
 
-}
-function _all_users(callback) {
-	if (callback) {
-		return callback(null,cache_database.users)
-	}
-}
-function _all_msgs(callback) {
-	if (callback) {
-		return callback(null,cache_database.msgs)
-	}
-}
-function _all_rooms(callback) {
-	if (callback) {
-		return callback(null,cache_database.rooms)
-	}
-}
-function _all(table) {
-			var args = _slice(arguments,1);
-			switch(table) {
-				case 'rooms':
-					_all_rooms.apply(null,args);
-					break;
-				case 'users':
-					_all_users.apply(null,args);
-					break;
-				case 'msgs':
-					_all_msgs.apply(null,args);
-					break;
-			}
-}
 
-function _select_(table,opt,fn) {
-	var args = _slice(arguments,1);
-	async.waterfall([
-			function (callback) {
-				MongoClient.connect(url,function (err,client) {
-					var db = client.db(dbName);
-					callback(err,db);
-				});
-			},
-			function (db,callback) {
-				var collection = db.collection(table);
-				collection.find(opt).toArray(function (err,result) {
-					callback(err,result,db);
-				});
-			}
-		],function (err,result,db) {
-			if (err) {
-				throw err;
-			}
-			fn(err,result);
-			// db.close();
-
-	});
-}
-
-function _add_(table,arr,fn) {
-	var args = _slice(arguments,1);
-	async.waterfall([
-			function (callback) {
-				MongoClient.connect(url,function (err,client) {
-					var db = client.db(dbName);
-					debugger
-					callback(err,db);
-				});
-			},
-			function (db,callback) {
-				var collection = db.collection(table);
-				collection.insertMany(arr,function (err,result) {
-					debugger
-					callback(err,result,db);
-				});
-			}
-		],function (err,result,db) {
-			if (err) {throw err;}
-			fn(err,result);
-			// db.close();		
-	});
-	
-}
-
-function _all_(table,fn) {
-	var args = _slice(arguments,1);
-	async.waterfall([
-			function (callback) {
-				MongoClient.connect(url,function (err,client) {
-					var db = client.db(dbName);
-					callback(err,db);
-				});
-			},
-			function (db,callback) {
-				var collection = db.collection(table);
-				collection.find({}).toArray(function (err,result) {
-					callback(err,result,db);
-				});
-			}
-		],function (err,result,db) {
-			if (err) {
-				throw err;
-			}
-			fn(err,result);
-			// db.close();
-	});
-	
-}
-
-function _delete_(table,opt,fn) {
-	var args = _slice(arguments,1);
-	async.waterfall([
-			function (callback) {
-				MongoClient.connect(url,function (err,client) {
-					var db = client.db(dbName);
-					callback(err,db);
-				});
-			},
-			function (db,callback) {
-				var collection = db.collection(table);
-				collection.deleteOne(opt),function (err,result) {
-					callback(err,result,db);
-				};
-			}
-		],function (err,result,db) {
-			if (err) {
-				throw err;
-			}
-			fn(err,result);
-			// db.close();
-	});
-}
-
-//删光
-function _clean_() {
-		async.waterfall([
-			function (callback) {
-				MongoClient.connect(url,function (err,client) {
-					var db = client.db(dbName);
-					callback(err,db);
-				});
-			},
-			function (db,callback) {
-				var arr = ['rooms'];
-				for (var i = 0; i < arr.length; i++) {
-					var collection = db.collection(arr[i]);
-					debugger
-					collection.deleteMany({},function (err,result) {
-						callback(err,result,db);
-					});
-				}
-				
-			}
-		],function (err,result,db) {
-			if (err) {
-				throw err;
-			}
-			console.log(result);
-			// db.close();
-	});
-}
-exports.clean = _clean_;
-exports.all = _all_;
-exports.delete = _delete_;
-exports.add = _add_;
-exports.select = _select_;

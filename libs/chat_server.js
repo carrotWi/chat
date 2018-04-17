@@ -1,10 +1,16 @@
+var chat_database = require('./chat_database.js');
+chat_database = chat_database();
 var socketio = require('socket.io');
 var chat_cache_database = require('./chat_cache_database.js');
 var async = require('async');
 var tools = require('../tools/index.js')
 var m = require('../libs/chat_module.js')
 var io;
-var public_room;
+var public_room = new m.Room().init({
+		name : '公共',
+		space : '/public',
+		id : 54,
+	});
 module.exports = function (server) {
 	io = socketio.listen(server);
 
@@ -12,31 +18,9 @@ module.exports = function (server) {
 		服务器打开
 			初始化一个房间 --> name : public
 	 */
-	function get_id() {
-		var date = new Date().getTime();
-		var hash = Math.floor(Math.random() * 10) * 17;
-		return hash + date;
-	}
-	var rooms_public = new m.Room(get_id(),'公共','/public');
-	var rooms_test = new m.Room(get_id(),'test','/test');
-	chat_cache_database.add('rooms',[rooms_public],function (err,room) {
-		debugger
-		public_room = room;
-	});
-	chat_cache_database.add('rooms',[rooms_test],function (err,room) {
-		debugger
-	});
-	// id count name
-	 // chat_cache_database.add(1,0,'public');
 	 io.on('connection',function (socket) {
-	 	//id name
-	 	//var user = chat_cache_database.add('users',socket.id,socket.id);
-	 	//加入一个房间
-	 	// _join_room(socket,user);
-	 	//把房间历史记录发给这个用户
-	 	_history_room(socket);
 	 	//游客进入
-	 	_join_room(socket);
+	 	_join_room(socket,public_room);
 	 	//登录的监听器
 	 	handle_login_success(socket);
 	 	//这个游客离开了
@@ -52,7 +36,7 @@ module.exports = function (server) {
 	 				function (callback) {
 	 					var space = '/' + name;
 	 					var r = new m.Room(get_id(),name,space);
-	 					chat_cache_database.add('rooms',r,function (err,room) {
+	 					chat_cache_database.add('rooms',[r],function (err,room) {
 	 						callback(err,room);
 	 					});
 	 				},
@@ -90,172 +74,84 @@ module.exports = function (server) {
 	 		_send_rooms_list(socket);
 	 		//转发这个用户的消息
 	 		handle_msg(socket);	 	
-	 		var u = new m.User(get_id(),user.name,user.password,socket.id,public_room.id);	
-	 		chat_cache_database.add('users',u,function (err,user) {
+	 		//在数据库找到这个用户
+	 		chat_database.find('users',user,function (err,users) {
 	 			if (err) {
 	 				throw err;
+	 				return
 	 			}
-	 			//用户进入了房间
-	 			_join_room(socket,user);
+	 			//加入公共房间
+	 			var user = users[0];
+	 			_join_room(socket,public_room,user);
 	 		});
+	 			
 	 		//这个用户离开了
 	 		socket.on('disconnect',function () {
 	 			_disconnect_handle(socket,user);
 	 		});
 	 	});
 	 }
-	 function _history_room(socket) {
-	 	var opt = {
-	 		'socket_id' : socket.id,
-	 	}
-	 	chat_cache_database.select('users',opt,function (err,users) {
-	 		//已经登录的用户
-	 		if (users.length) {
-	 			async.waterfall([
-	 					function (callback) {
-	 							//通过socket.id拿users
-	 							var opt = {
-	 								'socket_id' : socket.id ,
-	 							}
-	 							chat_cache_database.select('users',opt,function (err,users) {
-	 								callback(err,users);
-	 							});
-	 					},
-	 					function (user,callback) {
-	 						//通过users拿到rooms
-	 						if (users.length) {
-	 							var opt = {
-	 								'id' : users[0].room_id,
-	 							}
-	 							chat_cache_database.select('rooms',opt,function (err,rooms) {
-	 								callback(err,rooms);
-	 							});
-	 						}else{
-	 							callback(null,[]);
-	 						}
-	 					},
-	 					function (rooms,callback) {
-	 						if (rooms.length) {
-	 							//通过room拿到msg_list
-	 							var opt = {
-	 								'room_id' : rooms[0].id,
-	 							};
-	 							chat_cache_database.select('msg',opt,function (err,msg_list) {
-	 								callback(err,msg_list);
-	 							});
-	 						}else{
-	 							callback(null,[]);
-	 						}
-	 					}
-	 				],function (err,result) {
-	 				if (err) {
-	 					throw err;
-	 				}
-	 				socket.emit('msg_list',result);
-	 			});
-	 		}else{
-	 			//游客
-	 			async.waterfall([
-	 				function (callback) {
-	 					//找到消息列
-	 					var opt = {
-	 						'room_id' : public_room.id,
-	 					}
-	 					chat_cache_database.select('msgs',opt,function (err,msg_list) {
-	 						callback(err,msg_list);
-	 					});
-	 				},
-	 				function (msg_list,callback) {
-	 					//并表 用户id 对应用户
-	 					var opt = {
-	 						'id' : msg.user_id,
-	 					};
-	 					tools('map',msg_list,function (msg) {
-	 						chat_cache_database.select('users',opt,function (err,user) {
-	 							msg.user_name = user.name;
-	 						});
-	 					},function (err,result) {
-	 						callback(err,result);
-	 					});
-	 				},
-	 				function (msg_list,callback) {
-	 					//过滤同一个聊天室的信息
-	 					//默认的房间
-	 					tools('filter',msg_list,function (msg) {
-	 						return msg.room_id === public_room.id;
-	 					},function (err,result) {
-	 						callback(err,result);
-	 					});
-	 				}
-	 				],function (err,result) {
-	 					if (err) {
-	 						throw err;
-	 					}
-	 					socket.emit('msg_list',result);
-	 			});
+	 function _history_room(socket,room) {
+	 	//发送这个房间所有的msg
+	 	chat_database.find('msgs',room,function (err,msgs) {
+	 		if (err) {
+	 			throw err;
+	 			return;
 	 		}
+	 		socket.emit('msg_list',msgs);
 	 	});
 	 }
-	function _join_room(socket,user,space) {
+	function _join_room(socket,room,user) {
+		//socket 加入这个room
+		socket.join(room.space);
+		//把房间历史记录发给这个用户
+	 	_history_room(socket,room);
+	 	//把所有用户信息发给这个用户 emit--> user_list
+	 	var user_list = chat_cache_database.all('users',function (err,user_list) {
+	 		socket.emit('user_list',user_list);
+	 	});
 		//把用户信息发给全体用户
 		if (user) {
-			_broadcast_user(socket,user,space);
+			_broadcast_user(socket,user,room);
 		}
-		//把所有用户信息发给这个用户 emit--> user_list
-		var user_list = chat_cache_database.all('users',function (err,user_list) {
-			socket.emit('user_list',user_list);
-		});
 	}
-	 function _broadcast_user(socket,user,space) {
+	 function _broadcast_user(socket,user,room) {
 	 	// socket.emit('new_user',user);
-	 	if (space) {
-	 		socket.broadcast.to(space).emit('new_user',user);
+	 	if (room.space) {
+	 		socket.broadcast.to(room.space).emit('new_user',user);
 	 	}else{
-	 		// debugger
-	 		socket.broadcast.emit('new_user',user);
+	 		socket.broadcast.to('/').emit('new_user',user);
 	 	}
 	 	socket.emit('new_user',user);
 	 }
 	 //转发给 同一个 聊天室
 	 function handle_msg(socket) {
-	 	socket.on('msg',function (context,room_id) {
+	 	socket.on('msg',function (msg) {
+	 		//找到msg.room_id 关联的 room
 	 		async.waterfall([
 	 				function (callback) {
-	 					//找到这个用户
-	 					var opt = {
-	 						'socket_id' : socket.id,
-	 					};
-	 					chat_cache_database.select('users',opt,function (err,users) {
-	 						callback(err,users);
-	 					});
+	 					chat_database.find('msgs',msg,callback);
 	 				},
-	 				function (users,callback) {
-	 					//找到这个房间
-	 					var user = users[0];
-	 					var opt = {
-	 						'id' : user.room_id,
-	 					};
-	 					chat_cache_database.select('rooms',opt,function (err,rooms) {
+	 				function (msgs,callback) {
+	 					var msg = msgs[0];
+	 					chat_database.find('room',msg,function (err,rooms) {
 	 						var room = rooms[0];
-	 						callback(err,user,room);
-	 					});
-	 					//缓存这条消息
-	 					//id,text,user_id,time,room_id
+	 						callback(err,msg,room);
+	 					})
 	 				},
-	 				function (user,room,callback) {
-	 					var time = new Date().getTime();
-	 					var m = new m.Msg(get_id(),context,user.id,time,room.id);
-	 					chat_cache_database.add('msgs',m,function (err,msgs) {
-	 						var msg = msgs[0];
-	 						callback(err,msg);
-	 					});
+	 				function (msg,room,callback) {
+	 					//组装
+	 					msg.room = room;
+	 					callback(null,msg)
 	 				}
-	 			],function (err,msg) {
+	 			],function (err,result) {
 	 			if (err) {
 	 				throw err;
+	 				return ;
 	 			}
-	 			//发送
-	 			socket.broadcast.emit('msg',msg);
+	 			var msg = result;
+	 			var space = result.room.space;
+	 			socket.broadcast.to(space).emit('msg',msg);
 	 		});
 	 	});
 	 }
@@ -263,27 +159,10 @@ module.exports = function (server) {
 function _get_name() {
 	return new Date().getTime() + 17 * Math.floor(Math.random() * 10);
 }
-//并表
-//两张表,两个主键
-//显示第一张表
-// function _join_(table1,key1,table2,key2,callback) {
-// 	async.parallel([
-// 			function (callback) {
-// 				//拿到表1
-// 				chat_cache_database.select(table1,'id',key1,function (err,result) {
-// 					callback(err,result);
-// 				});
-// 			},
-// 			function (callback) {
-// 				//拿到表2
-// 				chat_cache_database.select(table2,'id',key2,function (err,result) {
-// 					callback(err,result);
-// 				});
-// 			}
-// 		],function (err,result) {
-// 			//并表
-// 			result[0].user_name = result[1].name;
-// 			callback(null,result[0]);
-// 	});
-// }
+function get_id() {
+		var date = new Date().getTime();
+		var hash = Math.floor(Math.random() * 10) * 17;
+		return hash + date;
+	}	
+
 

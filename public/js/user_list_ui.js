@@ -24,6 +24,7 @@ var user_list_ui = function () {
 
 	function _bindEvent() {
 		__io.on('new_user',function (data) {
+			debugger
 			_add(data.name);
 			var str = '欢迎 : ' + data.name;
 			char_ui.append(str);

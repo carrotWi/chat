@@ -22,7 +22,7 @@ module.exports = function (req,res) {
 			req.params[key] = decodeURIComponent(params[key]);
 		});
 		var post = req.params;
-		chat_database.has_user(post,function (err,result,field) {
+		chat_database.verify(post,function (err,result) {
 			res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
 			if (result.length) {
 				var str = 'false';

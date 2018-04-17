@@ -1,10 +1,10 @@
 var chat_database = require('../libs/chat_database.js');
 chat_database = chat_database();
+var chat_cache_database = require('../libs/chat_cache_database.js');
+var m = require('../libs/chat_module.js');
 var colors = require('colors');
 var async = require('async');
 var iconv = require('iconv-lite');
-var chat_database = require('../libs/chat_database.js');
-chat_database = chat_database();
 var colors = require('colors');
 var async = require('async');
 var iconv = require('iconv-lite');
@@ -22,7 +22,7 @@ module.exports = function (req,res) {
 			req.params[key] = decodeURIComponent(params[key]);
 		});
 		var post = req.params;
-		chat_database.verify(post,function (result) {
+		chat_database.verify(post,function (err,result) {
 			console.log(result);
 			if (result.length) {
 				res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
@@ -34,12 +34,15 @@ module.exports = function (req,res) {
 			}else{
 				res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
 				var name = post.name;
-				var obj = {
-						enroll : true,
-						name : name,
+				chat_cache_database.add('user',new m.User().init(post),function (err,user) {
+					if (err) {
+						throw err;
+						return;
 					}
-				chat_database.add(post);
-				res.end(JSON.stringify(obj));
+					user.enroll = true;
+					res.end(JSON.stringify(user));
+				});
+				
 			}
 		});
 	});

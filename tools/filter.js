@@ -1,11 +1,17 @@
-module.exports = function _map(obj,fn,callback) {
-	var result = {};
-	Object.keys(obj).forEach(function (key) {
-		debugger
-		var flag = fn(obj[key]);
-		if (flag) {
-			result[key] = obj[key];
+module.exports = function _map(arr,fn,cb) {
+	try{
+		var result = [];
+		for (var i = 0; i < arr.length; i++) {
+			var obj = arr[i];
+			Object.keys(obj).forEach(function (key) {
+				var flag = fn(obj);
+				if (flag) {
+					result.push(obj);
+				}
+			});
 		}
-	});
-	callback(null,result);
+		cb && cb(null,result);
+	}catch(err){
+		cb && cb(err);
+	}
 }

@@ -1,7 +1,7 @@
-module.exports = function _map(obj,fn,callback) {
+module.exports = function (obj,fn) {
 	var result = {};
 	Object.keys(obj).forEach(function (key) {
 		result[key] = fn(obj[key]);
 	});
-	callback(null,result);
+	return result;
 }
