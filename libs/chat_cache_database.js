@@ -199,7 +199,7 @@ function _add_msg(msg,cb) {
 			],function (err,result,filed) {
 				if (err) {
 					cb(err);
-					return;
+					return ;
 				}
 				if (cb) {
 					cb(null,msg);

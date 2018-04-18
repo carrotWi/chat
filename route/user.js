@@ -31,7 +31,6 @@ module.exports = function (req,res) {
 			});
 			var post = req.params;
 			chat_database.verify(post,function (err,result) {
-				debugger
 				if (err) {
 					throw err;
 					return;
@@ -40,7 +39,7 @@ module.exports = function (req,res) {
 					res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
 					var obj = {
 						verify : result,
-						user : post.name,
+						user : post,
 					}
 					res.end(JSON.stringify(obj));
 				}else{

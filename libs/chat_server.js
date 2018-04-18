@@ -6,6 +6,8 @@ var async = require('async');
 var tools = require('../tools/index.js')
 var m = require('../libs/chat_module.js')
 var io;
+var socket_user = {};
+var socket_room = {};
 var public_room = new m.Room().init({
 		name : '公共',
 		space : '/public',
@@ -28,14 +30,14 @@ module.exports = function (server) {
 	 		console.log('这个游客离开了'.red);
 	 	});
 	 });
-
+}
 	 //创建一个房间的监听器
 	 function _create_room_handle(socket) {
 	 	socket.on('create_room',function (name) {
 	 		async.waterfall([
 	 				function (callback) {
 	 					var space = '/' + name;
-	 					var r = new m.Room(get_id(),name,space);
+	 					var r = new m.Room();
 	 					chat_cache_database.add('rooms',[r],function (err,room) {
 	 						callback(err,room);
 	 					});
@@ -54,20 +56,16 @@ module.exports = function (server) {
 	 		socket.emit('room_list',rooms);
 	 	});
 	 }
-	 function _disconnect_handle(socket,user) {
+	 // function _disconnect_handle(socket,user) {
 	 	//缓存中删除这个用户
-	 	var opt = {
-	 		'socket_id' : socket.id,
-	 	}
-	 	chat_cache_database.delete('users',opt,function (err,result) {
-	 		//告诉所有人这个用户离线了
-	 		socket.broadcast.emit('quit_user',user);
-	 	});
 	 	
-	 }
+	 
 	 function handle_login_success(socket) {
 	 	//user-->json
 	 	socket.on('login_success',function (user) {
+	 		var user = new m.User().init(user);
+	 		//保存这个socket所在的房间
+	 		socket_room[socket.id] = public_room;
 	 		//创建一个房间的监听器
 	 		_create_room_handle(socket);
 	 		//发送房间列表
@@ -82,12 +80,14 @@ module.exports = function (server) {
 	 			}
 	 			//加入公共房间
 	 			var user = users[0];
+	 			//在服务器保存这个用户
+	 			socket_user[socket.id] = user;
 	 			_join_room(socket,public_room,user);
 	 		});
 	 			
 	 		//这个用户离开了
 	 		socket.on('disconnect',function () {
-	 			_disconnect_handle(socket,user);
+	 			// _disconnect_handle(socket,user);
 	 		});
 	 	});
 	 }
@@ -120,7 +120,7 @@ module.exports = function (server) {
 	 	if (room.space) {
 	 		socket.broadcast.to(room.space).emit('new_user',user);
 	 	}else{
-	 		socket.broadcast.to('/').emit('new_user',user);
+	 		socket.broadcast.to('/public').emit('new_user',user);
 	 	}
 	 	socket.emit('new_user',user);
 	 }
@@ -130,17 +130,34 @@ module.exports = function (server) {
 	 		//找到msg.room_id 关联的 room
 	 		async.waterfall([
 	 				function (callback) {
-	 					chat_database.find('msgs',msg,callback);
+	 					try{
+	 						var user = socket_user[socket.id];
+	 						var room = socket_room[socket.id];
+	 						var result = new m.Msg().init({
+	 							user_id : user.id,
+	 							text : msg.text,
+	 							room_id : room.id,
+	 						});
+	 						callback(null,result,user);
+	 					}catch(err){
+	 						callback(err);
+	 					}
 	 				},
-	 				function (msgs,callback) {
-	 					var msg = msgs[0];
-	 					chat_database.find('room',msg,function (err,rooms) {
+	 				function (opt,user,callback) {
+	 					chat_cache_database.add('msg',opt,function (err,msg) {
+	 						callback(err,msg,user);
+	 					});
+	 				},
+	 				function (msg,user,callback) {
+	 					var opt = msg;
+	 					chat_database.find('rooms',opt,function (err,rooms) {
 	 						var room = rooms[0];
-	 						callback(err,msg,room);
-	 					})
+	 						callback(err,room,msg,user);
+	 					});
 	 				},
-	 				function (msg,room,callback) {
+	 				function (room,msg,user,callback) {
 	 					//组装
+	 					msg.name = user.name;
 	 					msg.room = room;
 	 					callback(null,msg)
 	 				}
@@ -155,14 +172,3 @@ module.exports = function (server) {
 	 		});
 	 	});
 	 }
-}
-function _get_name() {
-	return new Date().getTime() + 17 * Math.floor(Math.random() * 10);
-}
-function get_id() {
-		var date = new Date().getTime();
-		var hash = Math.floor(Math.random() * 10) * 17;
-		return hash + date;
-	}	
-
-

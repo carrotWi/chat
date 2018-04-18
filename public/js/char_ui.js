@@ -57,11 +57,15 @@ var char_ui = function () {
 	}
 
 	function _add(context) {
+		var msg = {
+			text : context,
+		}
+		__io.send(msg);
+		msg.name = 'you';
 		var data = {
-			msgs : [{name : 'you' , text : context,}]
+			msgs : [msg]
 		}
 		_hb.combine_append($tem_msg,$msgs,data);
-		__io.send(context);
 	}
 	function _append(context) {
 		var data = {

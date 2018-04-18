@@ -118,6 +118,8 @@ module.exports = function () {
 			case 'msgs':
 				find_msgs.apply(null,arg);
 				break;
+			default : throw 'not table';
+				break;
 		}
 	}
 
