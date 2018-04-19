@@ -21,7 +21,11 @@ window.onload = function () {
 	login_enroll_ui.init(_io);
 	_io.once('user_list',function (data) {
 		user_list_ui.init(_io,hb,data);
+		_io.on('online_user_list',function (data1) {
+				user_list_ui.update_online_user(data1);
+			});
 	});
+
 	_io.once('msg_list',function (data) {
 		char_ui.init(_io,hb,data);
 	});

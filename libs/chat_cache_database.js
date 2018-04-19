@@ -387,7 +387,7 @@ function _update(table) {
 function _all_user(cb) {
 	async.waterfall([
 			function (callback) {
-				var sql = 'SELECT user_name_password.*,user_age.age,user_sex.sex,user_alias.alias,user_login_time.time AS login_time,user_enroll_time.time AS enroll_time FROM (user_name_password INNER JOIN (user_age INNER JOIN (user_sex INNER JOIN (user_alias INNER JOIN (user_login_time INNER JOIN user_enroll_time ON user_enroll_time.user_id=user_login_time.user_id) ON user_alias.user_id=user_login_time.user_id) ON user_alias.user_id=user_sex.user_id) ON user_age.user_id=user_sex.user_id) ON user_name_password.id=user_age.user_id);';
+				var sql = ' SELECT user_name_password.*, user_age.age, user_sex.sex, user_alias.alias, user_login_time.time AS login_time, user_enroll_time.time AS enroll_time, user_room.room_id FROM  (user_room INNER JOIN (user_name_password INNER JOIN  (user_age INNER JOIN  (user_sex INNER JOIN  (user_alias INNER JOIN  (user_login_time INNER JOIN  user_enroll_time ON user_enroll_time.user_id=user_login_time.user_id) ON user_alias.user_id=user_login_time.user_id) ON user_alias.user_id=user_sex.user_id) ON user_age.user_id=user_sex.user_id)  ON user_name_password.id=user_age.user_id) ON user_room.user_id=user_name_password.id);';
 				connection.query(sql,callback);
 			},
 			function (result,field,callback) {
@@ -479,6 +479,9 @@ function _all(table) {
 					break;
 				case 'msg':
 					_all_msg.apply(null,args);
+					break;
+				default : 
+					throw "table";
 					break;
 			}
 }

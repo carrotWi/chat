@@ -26,7 +26,6 @@ var menu_room = function () {
 		var data = {
 			rooms : romm_list,
 		}
-		debugger
 		_hb.combine_replace($template,$select,data);
 	}
 

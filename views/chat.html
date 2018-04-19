@@ -29,7 +29,7 @@
 	</script>
 	<script type="text/x-handlebars" id="user">
 		{{#user_p users}}
-		<p class="user">{{name}}</p>
+		<button class="btn" class="user" disabled="disabled" data-user-id="{{id}}">{{name}}</button>
 		{{/user_p}}
 	</script>
 	<script type="text/x-handlebars" id="room_item">

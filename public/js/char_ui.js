@@ -59,7 +59,7 @@ var char_ui = function () {
 	function _add(context) {
 		var msg = {
 			text : context,
-		}
+		} 
 		__io.send(msg);
 		msg.name = 'you';
 		var data = {
