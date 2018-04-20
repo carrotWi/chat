@@ -446,7 +446,7 @@ function _all_room(cb) {
 function _all_msg(cb) {
 	async.waterfall([
 				function (callback) {
-					var sql = 'SELECT msg_text.id,msg_room.room_id,msg_text.text,msg_time.time,room_name.name FROM (room_name INNER JOIN (msg_room INNER JOIN  (msg_text INNER JOIN  (msg_time INNER JOIN msg_user  ON msg_time.msg_id=msg_user.msg_id) ON msg_text.id=msg_time.msg_id) ON msg_room.msg_id=msg_text.id) ON msg_room.room_id=room_name.room_id);';
+					var sql = ' SELECT msg_text.id, msg_room.room_id, msg_text.text, msg_time.time, room_space.space, user_name_password.`name` FROM (user_name_password INNER JOIN (room_space INNER JOIN (msg_room INNER JOIN  (msg_text INNER JOIN  (msg_time INNER JOIN msg_user  ON msg_time.msg_id=msg_user.msg_id) ON msg_text.id=msg_time.msg_id) ON msg_room.msg_id=msg_text.id) ON msg_room.room_id=room_space.id) ON user_name_password.id=msg_user.user_id)';
 					connection.query(sql,callback);
 				},
 				function (result,field,callback) {

@@ -1,5 +1,6 @@
 var tip_ui = function () {
 	var $tip;
+	var $prompt;
 	function _init() {
 		_cache();
 		_bindEvent();
@@ -33,48 +34,26 @@ var tip_ui = function () {
 		var classname = 'alert-danger';
 		var msg = msg || '失败';
 		_switch(classname,msg);
-	}
-	// function _show(flag) {
-	// 		$tip.slideToggle("slow");
-	// 		switch(flag) {
-	// 			case 'warn':
-	// 				_warn();
-	// 				break;
-	// 			case 'success':
-	// 				_success();
-	// 				break;
-	// 			case 'fail':
-	// 				_fail();
-	// 				break;
-	// 		}
-	// 	}
-	
+	}	
 	function _trun(flag,msg) {
 		$tip.slideToggle("fast");
-		setTimeout(function () {
+		$tip.slideToggle("slow");
+		switch(flag) {
+			case 'warn':
+				_warn(msg);
+				break;
+			case 'success':
+				_success(msg);
+				break;
+			case 'fail':
+				_fail(msg);
+				break;
+		}
+		var time = setTimeout(function () {
 			$tip.slideToggle("slow");
-			switch(flag) {
-				case 'warn':
-					_warn(msg);
-					break;
-				case 'success':
-					_success(msg);
-					break;
-				case 'fail':
-					_fail(msg);
-					break;
-			}
-		},500);
-		setTimeout(function () {
-			$tip.slideToggle("slow");
-		},4000);
-		// debugger
-		
+			clearTimeout(time);
+		},2000);		
 	}
-	/*
-		todo
-			trun
-	 */
 	return {
 		init : _init,
 		trun : _trun,

@@ -10,11 +10,6 @@ var user_list_ui = function () {
 		_hb = hb;
 		_cache();
 		_bindEvent();
-
-		// var init_data = arguments[0];
-		// if (init_data) {
-		// 	_hb.combine_replace($tem_user,$users,init_data);
-		// }
 		if (userList) {
 			_user_list = userList;
 			Object.keys(userList).forEach(function (key) {
@@ -26,13 +21,11 @@ var user_list_ui = function () {
 
 	function _bindEvent() {
 		__io.on('new_user',function (data) {
-			// _add(data.name);
 			_online(data);
 			var str = '欢迎 : ' + data.name;
 			char_ui.append(str);
 		});
 		__io.on('quit_user',function (data) {
-			console.log(data.name);
 			_remove(data.name);
 		});
 	}
@@ -53,7 +46,6 @@ var user_list_ui = function () {
 		var $btns = $users.find('Button');
 		$btns.each(function (index,item) {
 			var $btn = $(item);
-			console.log($btn[0]);
 			if ($btn.data('user-id')===user.id) {
 				$btn.removeAttr('disabled');
 			}
@@ -75,19 +67,12 @@ var user_list_ui = function () {
 			var $btns = $users.find('Button');
 			$btns.each(function (index,item) {
 				var $btn = $(item);
-				console.log($btn[0]);
 				if ($btn.data('user-id')===user.id) {
 					$btn.removeAttr('disabled');
 				}
 			});
 		}
 	}
-	/*
-		todo
-			add
-			remove
-			online
-	 */
 	return {
 		init : _init,
 		add : _add,

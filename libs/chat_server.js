@@ -10,6 +10,7 @@ var io;
 const socket_user = {};
 //在线的房间
 const socket_room = {};
+
 const public_room = new m.Room().init({
 		name : '公共',
 		space : '/public',
@@ -29,28 +30,9 @@ module.exports = function (server) {
 	 	handle_login_success(socket);
 	 	//这个游客离开了
 	 	socket.on('disconnect',function () {
-	 		console.log('这个游客离开了'.red);
 	 	});
 	 });
 }
-	 //创建一个房间的监听器
-	 function _create_room_handle(socket) {
-	 	socket.on('create_room',function (name) {
-	 		async.waterfall([
-	 				function (callback) {
-	 					var space = '/' + name;
-	 					var r = new m.Room();
-	 					chat_cache_database.add('room',[r],function (err,room) {
-	 						callback(err,room);
-	 					});
-	 				},
-	 			],function (err,result) {
-	 			if (err) {
-	 				throw err;
-	 			}
-	 		});
-	 	});
-	 }
 
 	 function _send_rooms_list(socket) {
 	 	//发送房间列表
@@ -71,8 +53,6 @@ module.exports = function (server) {
 	 		var user = new m.User().init(user);
 	 		//保存这个socket所在的房间
 	 		_save_room(socket,public_room);
-	 		//创建一个房间的监听器
-	 		_create_room_handle(socket);
 	 		//发送房间列表
 	 		_send_rooms_list(socket);
 	 		//转发这个用户的消息
@@ -144,7 +124,7 @@ module.exports = function (server) {
 				if (err) {
 					throw err;
 				}
-				socket.broadcast.to(room.space).emit('online_user_list',result);
+				socket.emit('online_user_list',result);
 		});
 	}
 	function _join_room(socket,room,user) {
@@ -155,9 +135,9 @@ module.exports = function (server) {
 	 	//把所有用户信息发给这个用户 emit--> user_list
 	 	var user_list = chat_cache_database.all('user',function (err,user_list) {
 	 		socket.emit('user_list',user_list);
+	 		//发送在线的用户
+	 		_emit_online_user_list(socket,room);
 	 	});
-	 	//发送在线的用户
-	 	_emit_online_user_list(socket,room);
 		//把用户信息发给全体用户
 		if (user) {
 			_broadcast_user(socket,user,room);

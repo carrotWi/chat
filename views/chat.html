@@ -2,10 +2,10 @@
 <html>
 <head>
 	<meta charset="utf-8"> 
-	<title>Bootstrap 实例 - 表单控件状态</title>
+	<title>chat</title>
 	<link rel="stylesheet" href="../public/css/bootstrap.css">  
-	<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
-	<script type="text/javascript" src="../public/js/handlebars-v4.0.11.js"></script>
+<!-- 	<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
+ -->	<script type="text/javascript" src="../public/js/handlebars-v4.0.11.js"></script>
 	<script src="../public/js/jquery-3.3.1.js"></script>
 	<script src="../public/js/bootstrap.js"></script>
 	<script src="../public/js/socket.io.dev.js"></script>
@@ -29,7 +29,7 @@
 	</script>
 	<script type="text/x-handlebars" id="user">
 		{{#user_p users}}
-		<button class="btn" class="user" disabled="disabled" data-user-id="{{id}}">{{name}}</button>
+		<button class="btn btn-block" style="padding-right: 0px;padding-left: 0px;" class="user" disabled="disabled" data-user-id="{{id}}">{{name}}</button>
 		{{/user_p}}
 	</script>
 	<script type="text/x-handlebars" id="room_item">
@@ -73,10 +73,10 @@
 	<!--  -->
 	<div class="container" style="margin-top: 20px;">
 		<div class="row">
-			<div id="msgs" class="col-md-10 jumbotron pre-scrollable well" style="height: 1000px;">
+			<div id="msgs" style="padding-bottom: 0px;margin-bottom: 0px;padding-top: 0px;margin-top: 0px;" class="col-md-10 jumbotron pre-scrollable well" style="height: 1000px;">
 				
 			</div>
-			<div id="users" class="col-md-2 jumbotron pre-scrollable " style="height: 1000px;" id="users" style="position: relative;">
+			<div id="users" class="col-md-2 jumbotron pre-scrollable " style="height: 1000px; padding: 20px;margin: 0px;" id="users" style="position: relative;">
 				<!-- <span style="position: absolute;margin: 10px;" class="">用户</span> -->
 			</div>
 		</div>
@@ -99,23 +99,6 @@
 		</div>
 	</div>
 	<!--  -->
-	<!-- <div class="container" style="margin-top: 20px;">
-		<div class="row">
-			<div id="rooms" class="col-md-12 jumbotron pre-scrollable">
-				<form class="" role="form">
-					<span class="glyphicon glyphicon-home btn-lg"></span>
-					<select class="form-control" multiple>
-						<option class="input-lg">1</option>
-						<option class="input-lg">2</option>
-						<option class="input-lg">3</option>
-						<option class="input-lg">4</option>
-						<option class="input-lg">5</option>
-						<option class="input-lg">6</option>
-					</select>
-				</form>
-			</div>
-		</div>
-	</div> -->
 	<div class="modal fade" id="enroll_dialog" tabindex="-1" role="dialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -156,5 +139,8 @@
 			</div>
 		</div>
 	</div>
+	<!--  -->
+
+	<!--  -->
 </body>
 </html>

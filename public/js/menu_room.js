@@ -8,13 +8,7 @@ var menu_room = function () {
 		_io = io;
 		_cache();
 		_bindEvent();
-		// if (romm_list) {
-		// 	for (var i = 0; i < romm_list.length; i++) {
-		// 		var room = romm_list[i];
-		// 		var data = room;
-				_show_room_handle(romm_list);
-		// 	}
-		// }
+		_show_room_handle(romm_list);
 		return this;
 	}
 
@@ -33,10 +27,6 @@ var menu_room = function () {
 		$select = $('#menu_room');
 		$template = $('#room_item');
 	}
-	/*
-		todo
-			add
-	 */
 	return {
 		init : _init,
 	}

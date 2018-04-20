@@ -26,15 +26,18 @@ var login_enroll_ui = function () {
 						$frame.slideToggle(1000);
 						char_ui.open();
 						_io.emit('login_success',data.user);
+					} else {
+						var str = '登录失败';
+						tip_ui.trun('fail',str);
 					}
 				},
 				beforeSend : function () {
 				},
 			}
 			$.ajax(opt)
-			.done(function() { log("success"); })
-    		.fail(function() { log("fail"); })
-    		.always(function() { log("complete"); });
+			// .done(function() { log("success"); })
+   //  		.fail(function() { log("fail"); })
+   //  		.always(function() { log("complete"); });
 			return false;
 		});
 		$enroll.click(function () {
@@ -60,11 +63,6 @@ var login_enroll_ui = function () {
 			}
 		});
 	}
-	/*
-		todo
-			add
-			remove
-	 */
 	return {
 		init : _init,
 	}

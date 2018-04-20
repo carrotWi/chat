@@ -17,7 +17,6 @@ var enroll_ui = function () {
 					remote : {
 						url : '/validate',
 						type : 'POST',
-						// datatyoe : 'json',
 						data : {
 							name : function () {
 								return $name.val();
@@ -50,11 +49,6 @@ var enroll_ui = function () {
 		console.log(msg);
 	}
 	function _bindEvent() {
-				// $form.submit(function (event) {
-				// 	event.preventDefault();
-				// 	_form_handle(this);
-				// 	return false;
-				// });
 	}
 
 	function _form_handle(form) {
@@ -84,13 +78,6 @@ var enroll_ui = function () {
 		$enroll_dialog = $('#enroll_dialog');
 		$form = $('#enroll_form');
 	}
-
-	
-
-	/*
-		todo
-			
-	 */
 	return {
 		init : _init,
 	}

@@ -88,8 +88,8 @@ module.exports = function () {
 						chat_cache_database.all('msg',callback);
 					},
 					function (msgs,callback) {
-						tools('filter',msgs,function (room) {
-							return room.id===opt.room_id;
+						tools('filter',msgs,function (msg) {
+							return msg.room_id===opt.id;
 						},callback)
 					}
 				],function (err,msgs) {

@@ -41,6 +41,7 @@ var char_ui = function () {
 			msgs : [msg],
 		}
 		_hb.combine_append($tem_msg,$msgs,data);
+		_bottom($msgs);
 	}
 
 	function _send_msg_handle() {
@@ -66,20 +67,20 @@ var char_ui = function () {
 			msgs : [msg]
 		}
 		_hb.combine_append($tem_msg,$msgs,data);
+		_bottom($msgs);
 	}
 	function _append(context) {
 		var data = {
 			msgs : [{name : '管理员' , text : context,}]
 		}
 		_hb.combine_append($tem_msg,$msgs,data);
+		_bottom($msgs);
 	}
-	/*
-		todo
-			send
-			chose
-				user
-				msg
-	 */
+	//将滚动条放在最下面
+	function _bottom($dom) {
+		var top = $dom[0].scrollHeight;
+		$dom.scrollTop(top);
+	}
 	return {
 		init : _init,
 		send : _add,
