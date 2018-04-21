@@ -29,25 +29,53 @@ module.exports = function (req,res) {
 				req.params[key] = params[key];
 			});
 			var post = req.params;
-			chat_database.login(post,function (err,result) {
-				if (err) {
-					throw err;
-					return;
-				}
-				if (result) {
-					res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
-					var obj = {
-						verify : result,
-						user : post,
-					}
-					res.end(JSON.stringify(obj));
-				}else{
-					res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
-					var obj = {
-						verify : result,
-					}
-					res.end(JSON.stringify(obj));
-				}
-			});
+			var obj = {
+				post : post,
+				req : req,
+				res : res,
+			};
+			login(obj)
+			.then(send)
+			.catch(send);
+	});
+}
+
+//登陆的一系列操作
+function login(obj) {
+	var post = obj.post;
+	return new Promise(function (resolve,reject) {
+		chat_database.login(post,function (err,result) {
+			if (err) {
+				throw err;
+			}
+			obj.user = post;
+			obj.verify = result;
+			if (result) {
+				resolve(obj);
+			}else{
+				reject(obj);
+			}
+		});
+	});
+}
+
+//更行用户登录的状态
+function update_session(obj) {
+	
+}
+
+
+//发送结果
+function send(obj) {
+	var req = obj.req;
+	var res = obj.res;
+	return new Promise(function (resolve,reject) {
+		var data = {
+			user : obj.post,
+			verify : obj.verify,
+		}
+		debugger
+		res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
+		res.end(JSON.stringify(data));
 	});
 }
