@@ -1,8 +1,7 @@
-var chat_database = require('../libs/chat_database.js');
-chat_database = chat_database();
-var colors = require('colors');
-var async = require('async');
-var iconv = require('iconv-lite');
+const chat_database = require('../libs/chat_database.js');
+const colors = require('colors');
+const async = require('async');
+const iconv = require('iconv-lite');
 
 function format(str) {
 	var result = {};
@@ -30,7 +29,7 @@ module.exports = function (req,res) {
 				req.params[key] = params[key];
 			});
 			var post = req.params;
-			chat_database.verify(post,function (err,result) {
+			chat_database.login(post,function (err,result) {
 				if (err) {
 					throw err;
 					return;

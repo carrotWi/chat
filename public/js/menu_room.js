@@ -1,3 +1,4 @@
+//房间选择  废弃
 var menu_room = function () {
 	var _hb;
 	var $select;

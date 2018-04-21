@@ -25,6 +25,8 @@ var login_enroll_ui = function () {
 					if (data.verify) {
 						$frame.slideToggle(1000);
 						char_ui.open();
+						enroll_room_ui.init();
+						
 						_io.emit('login_success',data.user);
 					} else {
 						var str = '登录失败';

@@ -29,7 +29,7 @@ window.onload = function () {
 		char_ui.init(_io,hb,data);
 	});
 	_io.once('room_list',function (data) {
-		menu_room.init(_io,hb,data);
+		nav_ui.init(_io,hb,data);
 	});
 	// hb.combine_append($('#msg'),$('#msgs'),data1);
 	// hb.combine_append($('#user'),$('#users'),data);

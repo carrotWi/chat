@@ -1,13 +1,7 @@
-var chat_database = require('../libs/chat_database.js');
-chat_database = chat_database();
-var colors = require('colors');
-var async = require('async');
-var iconv = require('iconv-lite');
-var chat_database = require('../libs/chat_database.js');
-chat_database = chat_database();
-var colors = require('colors');
-var async = require('async');
-var iconv = require('iconv-lite');
+const chat_database = require('../libs/chat_database.js');
+const colors = require('colors');
+const async = require('async');
+const iconv = require('iconv-lite');
 
 module.exports = function (req,res) {
 	var bufs = [];
@@ -24,7 +18,7 @@ module.exports = function (req,res) {
 		var post = req.params;
 		chat_database.verify(post,function (err,result) {
 			res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
-			if (result.length) {
+			if (result) {
 				var str = 'false';
 				res.end(str);
 			}else{

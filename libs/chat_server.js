@@ -1,7 +1,7 @@
 var chat_database = require('./chat_database.js');
-chat_database = chat_database();
+// chat_database = chat_database();
 const socketio = require('socket.io');
-const chat_cache_database = require('./chat_cache_database.js');
+const chat_mysql = require('./chat_mysql.js');
 const async = require('async');
 const tools = require('../tools/index.js')
 const m = require('../libs/chat_module.js')
@@ -36,7 +36,7 @@ module.exports = function (server) {
 
 	 function _send_rooms_list(socket) {
 	 	//发送房间列表
-	 	var rooms = chat_cache_database.all('room',function (err,rooms) {
+	 	var rooms = chat_mysql.all('room',function (err,rooms) {
 	 		if (err) {
 	 			throw err;
 	 		}
@@ -133,7 +133,7 @@ module.exports = function (server) {
 		//把房间历史记录发给这个用户
 	 	_history_room(socket,room);
 	 	//把所有用户信息发给这个用户 emit--> user_list
-	 	var user_list = chat_cache_database.all('user',function (err,user_list) {
+	 	var user_list = chat_mysql.all('user',function (err,user_list) {
 	 		socket.emit('user_list',user_list);
 	 		//发送在线的用户
 	 		_emit_online_user_list(socket,room);
@@ -172,7 +172,7 @@ module.exports = function (server) {
 	 					}
 	 				},
 	 				function (opt,user,callback) {
-	 					chat_cache_database.add('msg',opt,function (err,msg) {
+	 					chat_mysql.add('msg',opt,function (err,msg) {
 	 						callback(err,msg,user);
 	 					});
 	 				},

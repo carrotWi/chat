@@ -1,13 +1,9 @@
-var chat_database = require('../libs/chat_database.js');
-chat_database = chat_database();
-var chat_cache_database = require('../libs/chat_cache_database.js');
-var m = require('../libs/chat_module.js');
-var colors = require('colors');
-var async = require('async');
-var iconv = require('iconv-lite');
-var colors = require('colors');
-var async = require('async');
-var iconv = require('iconv-lite');
+const chat_database = require('../libs/chat_database.js');
+const chat_mysql = require('../libs/chat_mysql.js');
+const m = require('../libs/chat_module.js');
+const colors = require('colors');
+const async = require('async');
+const iconv = require('iconv-lite');
 
 module.exports = function (req,res) {
 	var bufs = [];
@@ -18,6 +14,7 @@ module.exports = function (req,res) {
 		var buf = Buffer.concat(bufs);
 		var result = iconv.decode(buf,'utf8');
 		var params = format(result);
+		//对json 中的 value 转码
 		Object.keys(params).forEach(function (key) {
 			req.params[key] = decodeURIComponent(params[key]);
 		});
@@ -34,7 +31,7 @@ module.exports = function (req,res) {
 			}else{
 				res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
 				var name = post.name;
-				chat_cache_database.add('user',new m.User().init(post),function (err,user) {
+				chat_mysql.add('user',new m.User().init(post),function (err,user) {
 					if (err) {
 						throw err;
 						return;

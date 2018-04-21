@@ -1,43 +1,114 @@
-var chat_cache_database = require('./chat_cache_database.js');
-var async = require('async');
-var tools = require('../tools/index.js');
+const chat_mysql = require('./chat_mysql.js');
+const async = require('async');
+const tools = require('../tools/index.js');
 module.exports = function () {
 	
 	function verify(obj,cb) {
 		try{
-			async.waterfall([
-					function (callback) {
-						chat_cache_database.all('user',callback);
-					},
-					function (users,callback) {
-						tools('filter',users,function (user) {
-							return (user.name===obj.name) && (user.password===obj.password);
-						},callback);
-					},
-					function (users,callback) {
-						if (users.length) {
-							callback(null,true);
-						} else {
-							callback(null,false);
-						}
-					}
-				],function (err,result) {
-				if (err) {
-					cb && cb(err)
-				} else {
-					cb(null,result);
-				}
-			});
+			 //校验用户名是否存在
+			if (obj.name) {
+				has_user_name(obj,cb);
+			}
+			//检验房间是否存在
+			if (obj.space) {
+				has_room(obj,cb);
+			}
+			
 		}catch(err){
 			cb && cb(err);
 		}
+	}
+
+	function try_login(obj,cb) {
+		//尝试登陆
+		if (obj.name && obj.password) {
+				has_user_name_password(obj,cb);
+			}
+	}
+
+	function has_room(obj,cb) {
+		async.waterfall([
+				function (callback) {
+					chat_mysql.all('room',callback);
+				},
+				function (rooms,callback) {
+					tools('filter',rooms,function (room) {
+						return (room.space===obj.space);
+					},callback);
+				},
+				function (rooms,callback) {
+					if (rooms.length) {
+						callback(null,true);
+					} else {
+						callback(null,false);
+					}
+				}
+			],function (err,result) {
+			if (err) {
+				cb && cb(err)
+			} else {
+				cb(null,result);
+			}
+		});
+	}
+
+	function has_user_name(obj,cb) {
+		async.waterfall([
+						function (callback) {
+							chat_mysql.all('user',callback);
+						},
+						function (users,callback) {
+							tools('filter',users,function (user) {
+								return (user.name===obj.name);
+							},callback);
+						},
+						function (users,callback) {
+							if (users.length) {
+								callback(null,true);
+							} else {
+								callback(null,false);
+							}
+						}
+					],function (err,result) {
+					if (err) {
+						cb && cb(err)
+					} else {
+						cb(null,result);
+					}
+				});
+	}
+
+	function has_user_name_password(obj,cb) {
+		async.waterfall([
+				function (callback) {
+					chat_mysql.all('user',callback);
+				},
+				function (users,callback) {
+					tools('filter',users,function (user) {
+						return (user.name===obj.name) && (user.password===obj.password);
+					},callback);
+				},
+				function (users,callback) {
+					if (users.length) {
+						callback(null,true);
+					} else {
+						callback(null,false);
+					}
+				}
+			],function (err,result) {
+			if (err) {
+				cb && cb(err)
+			} else {
+				cb(null,result);
+			}
+		});
 	}
 
 	function find_users(opt,cb) {
 		try{
 			async.waterfall([
 					function (callback) {
-						chat_cache_database.all('user',callback);
+						chat_mysql.all('user',callback);
 					},
 					function (users,callback) {
 						tools('filter',users,function (u) {
@@ -61,7 +132,7 @@ module.exports = function () {
 		try{
 			async.waterfall([
 					function (callback) {
-						chat_cache_database.all('room',callback);
+						chat_mysql.all('room',callback);
 					},
 					function (rooms,callback) {
 						tools('filter',rooms,function (room) {
@@ -85,7 +156,7 @@ module.exports = function () {
 		try{
 			async.waterfall([
 					function (callback) {
-						chat_cache_database.all('msg',callback);
+						chat_mysql.all('msg',callback);
 					},
 					function (msgs,callback) {
 						tools('filter',msgs,function (msg) {
@@ -123,11 +194,14 @@ module.exports = function () {
 		}
 	}
 
+
+
 	return {
 		verify : verify,
 		find : find,
+		login : try_login,
 	}
-}
+}();
 
 function _slice(obj,index) {
 	var result = [];
