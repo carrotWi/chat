@@ -23,6 +23,9 @@ module.exports = function () {
 		//尝试登陆
 		if (obj.name && obj.password) {
 				has_user_name_password(obj,cb);
+			} else {
+				var err = new Error('name or password');
+				cb(err);
 			}
 	}
 
@@ -78,6 +81,45 @@ module.exports = function () {
 				});
 	}
 
+	/**
+	
+		TODO:
+		- 实现添加房间信息
+		- 用async
+		- 少加一个字段
+	
+	 */
+	function add_room(opt,cb) {
+		async.waterfall([
+				function (callback) {
+					has_room(opt,callback);
+				},
+				function (result,callback) {
+					//不存在才能添加
+					if (!result) {
+						chat_mysql.add('room',opt,function (err,room) {
+							//这个结果是成功添加
+							var result = true;
+							callback(err,result,room);
+						});
+					} else {
+						callback(null,result);
+					}
+				}
+			],function (err,result,room) {
+				if (cb) {
+					if (err) {
+						cb(err);
+						return 
+					}
+					cb(null,result,room);
+				}
+		});
+	}
+
+	
+
+
 	function has_user_name_password(obj,cb) {
 		async.waterfall([
 				function (callback) {
@@ -90,16 +132,17 @@ module.exports = function () {
 				},
 				function (users,callback) {
 					if (users.length) {
-						callback(null,true);
+						var user = users[0];
+						callback(null,true,user);
 					} else {
-						callback(null,false);
+						callback(null,false,null);
 					}
 				}
-			],function (err,result) {
+			],function (err,result,user) {
 			if (err) {
 				cb && cb(err)
 			} else {
-				cb(null,result);
+				cb(null,result,user);
 			}
 		});
 	}
@@ -175,8 +218,6 @@ module.exports = function () {
 			return
 		}
 	}
-
-
 	function find (table) {
 		var arg = _slice(arguments,1);
 		switch(table) {
@@ -193,13 +234,11 @@ module.exports = function () {
 				break;
 		}
 	}
-
-
-
 	return {
 		verify : verify,
 		find : find,
 		login : try_login,
+		add_room : add_room,
 	}
 }();
 

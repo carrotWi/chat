@@ -113,8 +113,8 @@ function _add_user(user,cb) {
 }
 //增加一个room
 function _add_room(room,cb) {
-		// var room = new m.Room(name,space);
-		if (room.space && room.name) {
+		var room = new m.Room().init(room);
+		if (room.space && room.name && room.user_id) {
 			async.waterfall([
 					function (callback) {
 						//存 spac
@@ -140,6 +140,13 @@ function _add_room(room,cb) {
 						connection.query(sql,value,function (err,result,filed) {
 							callback(err,result,filed);
 						});
+					},
+					function (result,filed,callback) {
+						var value = [room.id,room.user_id];
+						var sql = 'INSERT INTO room_create_user (room_id,user_id) VALUES (?,?);';
+						connection.query(sql,value,function (err,result,filed) {
+							callback(err,result,filed);
+						});
 					}
 				],function (err,result,filed) {
 					if (err) {
@@ -151,7 +158,7 @@ function _add_room(room,cb) {
 					}
 			});
 		} else {
-			var err = new Error('space name');
+			var err = new Error('space name user_id');
 			cb(err);
 		}
 }

@@ -34,11 +34,52 @@ module.exports = function (req,res) {
 				req : req,
 				res : res,
 			};
-			login(obj)
-			.then(send)
-			.catch(send);
+			//try promise
+			// login(obj)
+			// .then(send)
+			// .catch(send);
+
+			async.waterfall([
+					function (callback) {
+						// 登陆等一系列操作
+						chat_database.login(post,callback)
+					},
+					function (result,user,callback) {
+						//result 代表登陆操作的结果
+						try{
+							if (result) {
+								var session = req.session;
+								session.user = user;
+								callback(null,result,user);
+							} else {
+								callback(null,result,user);		
+							}
+						}catch(err){
+							callback(err);
+						}
+						//更行用户登录的状态
+					}
+				],function (err,result,user) {
+				if (err) {
+					res.writeHead(500,{'Content-Type': 'text/plain;charset:utf-8'});
+					res.end(JSON.stringify(err));
+					throw err;
+					return;
+				}
+				var obj1 = {
+					user : user,
+					verify : result,
+				}
+				res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
+				res.end(JSON.stringify(obj1));
+			});
 	});
 }
+
+
+/*===============================
+=            promise            =
+===============================*/
 
 //登陆的一系列操作
 function login(obj) {
@@ -64,18 +105,20 @@ function update_session(obj) {
 	
 }
 
-
 //发送结果
 function send(obj) {
 	var req = obj.req;
 	var res = obj.res;
 	return new Promise(function (resolve,reject) {
-		var data = {
+		var obj1 = {
 			user : obj.post,
 			verify : obj.verify,
 		}
-		debugger
 		res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
-		res.end(JSON.stringify(data));
+		res.end(JSON.stringify(obj1));
 	});
 }
+
+
+/*=====  End of promise  ======*/
+

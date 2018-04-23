@@ -43,15 +43,19 @@ var enroll_room_ui = function () {
 	}
 	function _form_handle(form) {
 		var $form = $(form);
+		debugger
 		var opt = {
-			type : $that.attr('method'),
-			url : $that.attr('action'),
-			data : $that.serialize(),  
+			type : $form.attr('method'),
+			url : $form.attr('action'),
+			data : $form.serialize(),  
 			dataType: "json", 
 			success : function (data) {
 				$enroll_dialog.modal('hide');
-				var str = data.name + '注册成功';
-				tip_ui.trun('success',str);
+				if (data.verify) {
+					add_success(data);
+				} else {
+					add_fail(data);
+				}	
 			},
 			beforeSend : function () {
 
@@ -67,6 +71,14 @@ var enroll_room_ui = function () {
 		$enroll_dialog = $('#room_dialog');
 		$room_name = $('#room_name');
 		$create_room = $('#create_room');
+	}
+	function add_success() {
+		var str = data.room.name + '房间成功';
+		tip_ui.trun('success',str);
+	}
+	function add_fail() {
+		var str = '房间失败';
+		tip_ui.trun('fail',str);
 	}
 	return {
 		init : _init,
