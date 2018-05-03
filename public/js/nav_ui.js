@@ -25,8 +25,8 @@ var nav_ui = function () {
 	function _bindEvent() {
 		$create_room_btn.click(_show_enroll_room_handle);
 	}
-	function _show_enroll_room_handle(argument) {
-		enroll_room_ui.iniy();
+	function _show_enroll_room_handle() {
+		enroll_room_ui.init(_io);
 	}
 	//当前所在房间
 	function _active_room(room) {
@@ -45,7 +45,7 @@ var nav_ui = function () {
 		$select = $('#rooms_list');
 		$template = $('#room_selector');
 		$count = $('#rooms_count');
-		$create_room_btn = $('#create_room_btn');
+		$create_room_btn = $('#create_room');
 		$body = $('#nav_rooms');
 	}
 	return {

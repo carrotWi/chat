@@ -28,7 +28,7 @@ window.onload = function () {
 	_io.once('msg_list',function (data) {
 		char_ui.init(_io,hb,data);
 	});
-	_io.once('room_list',function (data) {
+	_io.on('room_list',function (data) {
 		nav_ui.init(_io,hb,data);
 	});
 	// hb.combine_append($('#msg'),$('#msgs'),data1);

@@ -134,7 +134,6 @@ function send(obj) {
 			room : obj.post,
 			verify : obj.verify,
 		}
-		debugger
 		res.writeHead(200,{'Content-Type': 'text/plain;charset:utf-8'});
 		res.end(JSON.stringify(data));
 	});
