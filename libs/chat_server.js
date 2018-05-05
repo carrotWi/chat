@@ -16,9 +16,9 @@ const public_room = new m.Room().init({
 	space: '/public',
 	id: 54,
 });
+//程序入口
 module.exports = function(server) {
 	io = socketio.listen(server);
-
 	/*
 		服务器打开
 			初始化一个房间 --> name : public
@@ -27,10 +27,21 @@ module.exports = function(server) {
 		//游客进入
 		_join_room(socket, public_room);
 		//登录的监听器
-		handle_login_success(socket);
+		_login_success_handle(socket);
 		//这个游客离开了
-		socket.on('disconnect', function() {});
+		socket.on('disconnect', function() {
+			_delete_user(socket);
+			_delete_room(socket);
+		});
 	});
+}
+
+function _delete_user(socket) {
+	delete socket_user[socket.id];
+}
+
+function _delete_room(socket) {
+	delete socket_room[socket.id];
 }
 
 function _send_rooms_list(socket) {
@@ -42,19 +53,76 @@ function _send_rooms_list(socket) {
 		socket.emit('room_list', rooms);
 	});
 }
-// function _disconnect_handle(socket,user) {
-//缓存中删除这个用户
 
+//切换房间监听器
 function _switch_room_handle(socket) {
+	socket.on('switch_room', function(opt) {
+		/**
+		
+			TODO:
+			- 拿到房间
+			- 更新数据库
+			 - 更改 user 的 room_id 字段
+			- 刷新聊天室
+				- 刷新用户列表
+				- 刷新聊天室内容列表
+				
+		 */
 
+		async.waterfall([
+			function(callback) {
+				//拿到想要切换的房间
+				chat_database.find('rooms', opt, callback);
+			},
+			function(rooms, callback) {
+				try {
+					var room = rooms[0];
+					debugger
+					//保存现在的房间
+					_save_room(socket, room);
+					var user = socket_user[socket.id];
+					user.room_id = room.id;
+					//更新数据库
+					chat_database.switch_room(user, function (err,user) {
+						if (err) {
+							callback(err);
+							return;
+						}
+						callback(null,room);
+					});
+				} catch (err) {
+					callback(err);
+				}
+			}
+		], function(err, room) {
+			if (err) {
+				throw err;
+				return;
+			}
+			_refresh(socket,room);
+		});
+	});
 }
 
-function handle_login_success(socket) {
+/**
+
+	TODO:
+	- 刷新用户列表
+	- 刷行聊天信息
+
+ */
+
+function _refresh(socket,room) {
+	//并发
+	debugger
+	_history_room(socket, room);
+}
+
+//登陆成功监听器
+function _login_success_handle(socket) {
 	//user-->json
 	socket.on('login_success', function(user) {
 		var user = new m.User().init(user);
-		//保存这个socket所在的房间
-		_save_room(socket, public_room);
 		//换房间的监听器
 		_switch_room_handle(socket);
 		//重新加载房间列表的监听器
@@ -78,16 +146,40 @@ function handle_login_success(socket) {
 
 			//在服务器保存这个用户
 			_save_user(socket, user);
-			//加入公共房间
-			_join_room(socket, public_room, user);
+			//加入房间
+			/**
+			
+				TODO:
+				- find room by user
+				- call _join_room()
+			
+			 */
+			async.waterfall([
+				function(callback) {
+					var opt = user;
+					chat_database.find('rooms', opt, callback)
+				}
+			], function(err, rooms) {
+				if (err) {
+					throw err;
+				}
+				var room = rooms[0];
+				//加入房间
+				_join_room(socket, room, user);
+				// 保存这个socket所在的房间
+				_save_room(socket, room);
+			});
+			// _join_room(socket, public_room, user);
+
 		});
 
 		//这个用户离开了
 		socket.on('disconnect', function() {
-			// _disconnect_handle(socket,user);
+
 		});
 	});
 }
+
 function _reload_all_user_room_list_handle(socket) {
 	socket.on('reload_all_user_room_list', function() {
 		//发送房间列表
@@ -95,7 +187,7 @@ function _reload_all_user_room_list_handle(socket) {
 			if (err) {
 				throw err;
 			}
-			io.sockets.emit('room_list',rooms);
+			io.sockets.emit('room_list', rooms);
 		});
 	});
 }
@@ -105,6 +197,7 @@ function _save_room(socket, room) {
 }
 
 function _history_room(socket, room) {
+	// var room = socket_room[socket.id];
 	//发送这个房间所有的msg
 	chat_database.find('msgs', room, function(err, msgs) {
 		if (err) {
@@ -120,7 +213,6 @@ function _save_user(socket, user) {
 }
 
 function _emit_online_user_list(socket, room) {
-	var room = room || public_room;
 	/**
 		
 		TODO:
@@ -149,8 +241,9 @@ function _emit_online_user_list(socket, room) {
 	});
 }
 
+//游客进入直有前两个参数
 function _join_room(socket, room, user) {
-	//socket 加入这个room
+	//socket 加入这个 space
 	socket.join(room.space);
 	//把房间历史记录发给这个用户
 	_history_room(socket, room);
@@ -184,33 +277,34 @@ function handle_msg(socket) {
 				try {
 					var user = socket_user[socket.id];
 					var room = socket_room[socket.id];
-					var result = new m.Msg().init({
+					var msg1 = new m.Msg().init({
 						user_id: user.id,
 						text: msg.text,
 						room_id: room.id,
 					});
-					callback(null, result, user);
+					callback(null, msg1, user);
 				} catch (err) {
 					callback(err);
 				}
 			},
-			function(opt, user, callback) {
+			function(msg1, user, callback) {
+				var opt = msg1;
 				chat_mysql.add('msg', opt, function(err, msg) {
 					callback(err, msg, user);
 				});
 			},
-			function(msg, user, callback) {
-				var opt = msg;
+			function(msg2, user, callback) {
+				var opt = msg2;
 				chat_database.find('rooms', opt, function(err, rooms) {
 					var room = rooms[0];
 					callback(err, room, msg, user);
 				});
 			},
-			function(room, msg, user, callback) {
+			function(room, msg3, user, callback) {
 				//组装
-				msg.name = user.name;
-				msg.room = room;
-				callback(null, msg)
+				msg3.name = user.name;
+				msg3.room = room;
+				callback(null, msg3)
 			}
 		], function(err, result) {
 			if (err) {

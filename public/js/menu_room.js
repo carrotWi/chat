@@ -1,10 +1,11 @@
 //房间选择  废弃
-var menu_room = function () {
+var menu_room = function() {
 	var _hb;
 	var $select;
 	var _io;
 	var $template;
-	function _init(io,hb,romm_list) {
+
+	function _init(io, hb, romm_list) {
 		_hb = hb;
 		_io = io;
 		_cache();
@@ -14,14 +15,14 @@ var menu_room = function () {
 	}
 
 	function _bindEvent() {
-		
+
 	}
 
 	function _show_room_handle(romm_list) {
 		var data = {
-			rooms : romm_list,
+			rooms: romm_list,
 		}
-		_hb.combine_replace($template,$select,data);
+		_hb.combine_replace($template, $select, data);
 	}
 
 	function _cache() {
@@ -29,6 +30,6 @@ var menu_room = function () {
 		$template = $('#room_item');
 	}
 	return {
-		init : _init,
+		init: _init,
 	}
 }();

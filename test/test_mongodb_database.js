@@ -1,4 +1,4 @@
-var database = require('../libs/chat_cache_database.js');
+var database = require('../libs/chat_database.js');
 var m = require('../libs/chat_module.js');
 var tools = require('../tools/index.js')
 var u = new m.User().init({
@@ -35,10 +35,7 @@ var msg = new m.Msg().init({
 // });
 
 
-database.add('room',r,function (err,room) {
-	debugger
-	
-});
+
 
 // database.update('user',u,function (err) {
 // 	debugger

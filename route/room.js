@@ -15,7 +15,8 @@ function format(str) {
 		}
 	});
 	return result;
-}	
+}
+
 module.exports = function (req,res) {
 	var bufs = [];
 	req.on('data',function (data) {
@@ -85,6 +86,7 @@ module.exports = function (req,res) {
 			 });
 	});
 }
+
 //数据库的逻辑
 function query(obj) {
 	var opt = obj.post;

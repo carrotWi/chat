@@ -71,15 +71,15 @@ var enroll_room_ui = function() {
 			},
 		}
 		$.ajax(opt)
-			// .done(function() {
-			// 	log("success");
-			// })
-			// .fail(function() {
-			// 	log("fail");
-			// })
-			// .always(function() {
-			// 	log("complete");
-			// });
+		// .done(function() {
+		// 	log("success");
+		// })
+		// .fail(function() {
+		// 	log("fail");
+		// })
+		// .always(function() {
+		// 	log("complete");
+		// });
 	}
 
 	function _cache() {
