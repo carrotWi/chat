@@ -14,6 +14,9 @@ window.onload = function() {
 	});
 	_io.on('room_list', function(data) {
 		nav_ui.init(_io, hb, data);
+		_io.on('now_room', function(data) {
+			nav_ui.updata_now_room(data);
+		});
 	});
 }
 

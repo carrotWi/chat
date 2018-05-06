@@ -9,7 +9,8 @@ var nav_ui = function() {
 	var $body;
 	var $show_room;
 	var _is_init = false;
-	
+	//记录打上标记的房间
+	var $now_room;
 
 	function _init(io, hb, romm_list) {
 		if (_is_init) {
@@ -78,17 +79,41 @@ var nav_ui = function() {
 			2.打上新的标记
 	 */
 	function _updata_now_room(room) {
+		_update_show(room);
+		_updata_flag(room);
+	}
 
+	function _update_show(room) {
+		//更新显示器
+		$show_room.find('a').html(room.space);
 	}
-	function update_show(context) {
-		$show_room.text(context);
+
+	function _updata_flag(room) {
+		remove_flag();
+		add_flag(room);
 	}
-	function updata_flag() {
-		
+	//去除原来的标记
+	function remove_flag() {
+		debugger
+		if ($now_room) {
+			$now_room.removeClass('active');
+		}
+	}
+	//打上新的标记
+	function add_flag(room) {
+		$now_room = $select.find('li');
+		$now_room.each(function (index,item) {
+			var $that = $(item);
+			$that = $that.find('a');
+			if ($that.text() === room.space) {
+				$now_room = $that.parent();
+			}
+		});
+		debugger
+		$now_room.addClass('active');
 	}
 	return {
 		init: _init,
 		updata_now_room: _updata_now_room,
-		// active_room : _active_room,
 	}
 }();

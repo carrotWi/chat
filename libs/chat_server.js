@@ -11,10 +11,12 @@ const socket_user = {};
 //在线的房间
 const socket_room = {};
 
-const public_room = new m.Room().init({
-	name: '公共',
-	space: '/public',
-	id: 54,
+var public_room;
+chat_database.find('rooms',{
+	space : 'public',
+},function (err,rooms) {
+	if (err) {throw err;}
+	public_room = rooms[0];
 });
 //程序入口
 module.exports = function(server) {
@@ -132,7 +134,7 @@ function _login_success_handle(socket) {
 		//发送房间列表
 		_send_rooms_list(socket);
 		//转发这个用户的消息
-		handle_msg(socket);
+		_msg_handle(socket);
 		//在数据库找到这个用户
 		chat_database.find('users', user, function(err, users) {
 			if (err) {
@@ -208,6 +210,7 @@ function _history_room(socket, room) {
 		}
 		socket.emit('msg_list', msgs);
 	});
+	socket.emit('now_room', room);
 }
 
 function _save_user(socket, user) {
@@ -244,6 +247,7 @@ function _emit_online_user_list(socket, room) {
 }
 
 //游客进入直有前两个参数
+//换句话说，登陆就有第三个参数
 function _join_room(socket, room, user) {
 	//socket 加入这个 space
 	socket.join(room.space);
@@ -255,10 +259,17 @@ function _join_room(socket, room, user) {
 		//发送在线的用户
 		_emit_online_user_list(socket, room);
 	});
-	//把用户信息发给全体用户
+	
 	if (user) {
+		//告诉客户端用户所在的房间
+		//发送一个事件
+		_send_now_room(socket,room);
+		//把用户信息发给全体用户
 		_broadcast_user(socket, user, room);
 	}
+}
+function _send_now_room(socket,room) {
+	socket.emit('now_room',room);
 }
 
 function _broadcast_user(socket, user, room) {
@@ -271,7 +282,7 @@ function _broadcast_user(socket, user, room) {
 	socket.emit('new_user', user);
 }
 //转发给 同一个 聊天室
-function handle_msg(socket) {
+function _msg_handle(socket) {
 	socket.on('msg', function(msg) {
 		//找到msg.room_id 关联的 room
 		async.waterfall([
