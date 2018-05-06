@@ -181,7 +181,7 @@ module.exports = function() {
 				function(rooms, callback) {
 					tools('filter', rooms, function(room) {
 						var result = (room.id === opt.room_id) || (room.space === opt.space)
-						return  result;
+						return result;
 					}, callback)
 				}
 			], function(err, rooms) {
@@ -192,7 +192,7 @@ module.exports = function() {
 				cb && cb(null, rooms);
 			});
 		} catch (err) {
-			throw err;
+			cb(err);
 			return;
 		}
 	}

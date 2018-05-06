@@ -6,9 +6,15 @@ var char_ui = function() {
 	var $form;
 	var __io;
 	var _hb;
-	var _is_open = false;
+	var _is_init = false;
+
 
 	function _init(_io, hb, msg_list) {
+		if (_is_init) {
+			_replace_msg_list(msg_list);
+			return this;
+		}
+		_is_init = true;
 		_hb = hb;
 		__io = _io;
 		_cache();
@@ -21,10 +27,7 @@ var char_ui = function() {
 	}
 
 	function _open() {
-		if (!_is_open) {
-			$send.removeAttr('disabled');
-			_is_open = true;
-		}
+		$send.removeAttr('disabled');
 	}
 
 	function _bindEvent() {
@@ -50,7 +53,6 @@ var char_ui = function() {
 		var data = {
 			msgs: msgs,
 		}
-		debugger
 		_hb.combine_replace($tem_msg, $msgs, data);
 		_bottom($msgs);
 	}
@@ -123,6 +125,6 @@ var char_ui = function() {
 		open: _open,
 		append: _append,
 		append_msg_list: _append_msg_list,
-		replace_msg_list : _replace_msg_list,
+		replace_msg_list: _replace_msg_list,
 	};
 }();

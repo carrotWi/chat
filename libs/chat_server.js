@@ -46,11 +46,13 @@ function _delete_room(socket) {
 
 function _send_rooms_list(socket) {
 	//发送房间列表
+	//还需要用户所在的房间
 	var rooms = chat_mysql.all('room', function(err, rooms) {
 		if (err) {
 			throw err;
 		}
-		socket.emit('room_list', rooms);
+		var data = rooms;
+		socket.emit('room_list', data);
 	});
 }
 
@@ -83,12 +85,12 @@ function _switch_room_handle(socket) {
 					var user = socket_user[socket.id];
 					user.room_id = room.id;
 					//更新数据库
-					chat_database.switch_room(user, function (err,user) {
+					chat_database.switch_room(user, function(err, user) {
 						if (err) {
 							callback(err);
 							return;
 						}
-						callback(null,room);
+						callback(null, room);
 					});
 				} catch (err) {
 					callback(err);
@@ -99,7 +101,7 @@ function _switch_room_handle(socket) {
 				throw err;
 				return;
 			}
-			_refresh(socket,room);
+			_refresh(socket, room);
 		});
 	});
 }
@@ -112,7 +114,7 @@ function _switch_room_handle(socket) {
 
  */
 
-function _refresh(socket,room) {
+function _refresh(socket, room) {
 	//并发
 	debugger
 	_history_room(socket, room);

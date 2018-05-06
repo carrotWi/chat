@@ -1,204 +1,206 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8"> 
-	<title>chat</title>
-	<link rel="stylesheet" href="../public/bootstrap-3.3.7-dist/css/bootstrap.css">  
-	<!-- 导入字体 -->
 
-	<!--  -->
- 	<script type="text/javascript" src="../public/js/handlebars-v4.0.11.js"></script>
-	<script src="../public/js/jquery-3.3.1.js"></script>
-	<script src="../public/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
-	<script src="../public/js/socket.io.dev.js"></script>
-	<script src="../public/libs/jquery-validation-1.17.0/dist/jquery.validate.js"></script>
-	<script src="../public/libs/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
-	<!-- sdn -->
-	<!-- <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
-		<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
-		<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-	<!--  -->
-	<!-- 中文提示包 -->
-	<script src="../public/libs/jquery-validation-1.17.0/dist/localization/messages_zh.js"></script>
-	<!--  -->
-	<script src="../public/js/menu_room.js"></script>
-	<script src="../public/js/_io.js"></script>
-	<script src="../public/js/tip_ui.js"></script>
-	<script src="../public/js/login_enroll_ui.js"></script>
-	<script src="../public/js/char_ui.js"></script>
-	<script src="../public/js/user_list_ui.js"></script>
-	<script src="../public/js/nav_ui.js"></script>
-	<script src="../public/js/hb.js"></script>
-	<script src="../public/js/enroll_ui.js"></script>
-	<script src="../public/js/enroll_room_ui.js"></script>
-	<script type="text/x-handlebars" id="msg">
-		{{#msg_p msgs}}
-	    <p class="msg">{{name}} : {{text}}</p>
-		{{/msg_p}}
-	</script>
-	<script type="text/x-handlebars" id="user">
-		{{#user_p users}}
-		<button class="btn btn-block" style="padding-right: 0px;padding-left: 0px;" class="user" disabled="disabled" data-user-id="{{id}}">{{name}}</button>
-		{{/user_p}}
-	</script>
-	<script type="text/x-handlebars" id="room_item">
-		{{#room_option rooms}}
-		<option>{{name}}</option>
-		{{/room_option}}
-	</script>
-	<script type="text/x-handlebars" id="room_selector">
-		{{#room_option rooms}}
-		<li><a href="#">{{name}}</a></li>
-		{{/room_option}}
-	</script>
-	<!-- <script type="text/x-handlebars" id="tip">
-		<div class="alert {{class}}">{{msg}}</div>
-	</script> -->
+<head>
+    <meta charset="utf-8">
+    <title>chat</title>
+    <link rel="stylesheet" href="../public/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <!-- 导入字体 -->
+    <!--  -->
+    <script type="text/javascript" src="../public/js/handlebars-v4.0.11.js"></script>
+    <script src="../public/js/jquery-3.3.1.js"></script>
+    <script src="../public/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script src="../public/js/socket.io.dev.js"></script>
+    <script src="../public/libs/jquery-validation-1.17.0/dist/jquery.validate.js"></script>
+    <script src="../public/libs/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <!-- sdn -->
+    <!-- <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+    <!--  -->
+    <!-- 中文提示包 -->
+    <script src="../public/libs/jquery-validation-1.17.0/dist/localization/messages_zh.js"></script>
+    <!--  -->
+    <script src="../public/js/menu_room.js"></script>
+    <script src="../public/js/_io.js"></script>
+    <script src="../public/js/tip_ui.js"></script>
+    <script src="../public/js/login_enroll_ui.js"></script>
+    <script src="../public/js/char_ui.js"></script>
+    <script src="../public/js/user_list_ui.js"></script>
+    <script src="../public/js/nav_ui.js"></script>
+    <script src="../public/js/hb.js"></script>
+    <script src="../public/js/enroll_ui.js"></script>
+    <script src="../public/js/enroll_room_ui.js"></script>
+    <script type="text/x-handlebars" id="msg">
+        {{#msg_p msgs}}
+        <p class="msg">{{name}} : {{text}}</p>
+        {{/msg_p}}
+    </script>
+    <script type="text/x-handlebars" id="user">
+        {{#user_p users}}
+        <button class="btn btn-block" style="padding-right: 0px;padding-left: 0px;" class="user" disabled="disabled" data-user-id="{{id}}">{{name}}</button>
+        {{/user_p}}
+    </script>
+    <script type="text/x-handlebars" id="room_item">
+        {{#room_option rooms}}
+        <option>{{name}}</option>
+        {{/room_option}}
+    </script>
+    <script type="text/x-handlebars" id="room_selector">
+        {{#room_option rooms}}
+        <li class="active"><a href="#">{{name}}</a></li>
+        {{/room_option}}
+    </script>
+    <!-- <script type="text/x-handlebars" id="tip">
+        <div class="alert {{class}}">{{msg}}</div>
+    </script> -->
+    <!-- 入口函数 -->
 </head>
+
 <body>
-	<!--  -->
-	
-	<!--  -->
-	<div class="" id="tip"></div>
-	<div class="container" style="margin-top: 20px;" id="login_enroll_frame">
-		<div class="row">
-			<div class="col-md-12">
-				<form class="form-inline" role="form" action="/user" method="POST" id="login_enroll">
-					<div class="form-group">
-						<label>
-							用户名
-						</label>
-						<input type="text" class="form-control" name="name" id="name">
-					</div>
-					<div class="form-group">
-						<label>
-							密码
-						</label>
-						<input type="password" class="form-control" name="password" id="password">
-					</div>
-					<div class="form-group">
-						<button type="submit" class="btn btn-success">登录</button>
-						<button type="button" class="btn btn-info" id="enroll">注册</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	<!--  -->
-	<div class="container" style="margin-top: 20px;">
-		<div class="row">
-			<div id="msgs" style="padding-bottom: 0px;margin-bottom: 0px;padding-top: 0px;margin-top: 0px;" class="col-md-10 jumbotron pre-scrollable well" style="height: 1000px;">
-				
-			</div>
-			<div id="users" class="col-md-2 jumbotron pre-scrollable " style="height: 1000px; padding: 20px;margin: 0px;" id="users" style="position: relative;">
-				<!-- <span style="position: absolute;margin: 10px;" class="">用户</span> -->
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<form role="form" class="form-horizontal" id="chat">
-					<div class="form-horizontal">
-						<input type="text" name="msg" class="form-control" autocomplete="off" id="context_msg">
-						<button type="submit" class="btn btn-primary btn-block" id="send_msg" disabled="disabled">
-							<span class="">发送</span>
-						</button>
-						<!-- 房间选择 -->
-						<!-- <select id="menu_room">
-							<option>公共</option>
-						</select> -->
-						<!--  -->
-						<!-- 房间创建按钮 -->
-						<!-- <button id="create_room" class="btn btn-default btn-success" disabled="disabled">创建</button> -->
-						<!--  -->
-					</div>				
-				</form>
-			</div>
-		</div>
-	</div>
-	<!--  -->
-	<div class="modal fade" id="enroll_dialog" tabindex="-1" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="container">
-					<form class="form-horizontal" role="form" id="enroll_form" action="/enroll" method="POST">
-						<div class="form-group">
-							<label>用户名</label>
-							<input name="name" type="text" class="form-control" id="enroll_name">
-						</div>
-						<div class="form-group">
-							<label>密码</label>
-							<input name="password" type="password" class="form-control">
-						</div>
-						<div class="form-group">
-							<label>确认密码</label>
-							<input name="affirm" type="password" class="form-control">
-						</div>
-						<div class="form-group">
-							<label>性别</label>
-							<div class="radio">
-								<label class="radio-inline">
-									<input type="radio" name="sex" value="男">男
-								</label>
-								<label class="radio-inline">
-									<input type="radio" name="sex" value="女">女
-								</label>
-							</div>
-						</div>
-						<div class="form-group">
-							<label>昵称</label>
-							<input name="alias" type="text" class="form-control">
-						</div>
-						<div class="form-group">
-							<button type="submit" class="btn btn-primary btn-block" id="enroll_post">注册</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- 添加房间 -->
-	<div class="modal fade" id="room_dialog" tabindex="-1" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="container">
-					<form class="form-horizontal" role="form" id="room_form" action="/room" method="POST">
-						<div class="form-group">
-							<label>房间名</label>
-							<input name="space" type="text" class="form-control" id="room_name">
-						</div>
-						<div class="form-group">
-							<button type="submit" class="btn btn-primary form-control" id="room_post">注册</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!--   -->
-	<!-- 底部导航栏 -->
-	<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation" id="nav_rooms" style="display: none;">
-		<div class="container-fluid"> 
-	    <div class="navbar-header">
-	        <a class="navbar-brand" href="#"></a>
-	    </div>
-	    <div>
-	        <ul class="nav navbar-nav">
-	            <li class="active"><a href="#">
-					<span class="glyphicon glyphicon-user"></span>
-	            </a></li>
-	            <li><a href="#" id="create_room">创建房间</a></li>
-	            <li class="dropdown">
-	                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-	                    房间 <b class="caret" id="rooms_count"></b>
-	                </a>
-	                <ul class="dropdown-menu" id="rooms_list">
-	                	<!--  -->
-	                </ul>
-	            </li>
-	        </ul>
-	    </div>
-		</div>
-	</nav>
-	<!--  -->
+    <!--  -->
+    <!--  -->
+    <div class="" id="tip"></div>
+    <div class="container" style="margin-top: 20px;" id="login_enroll_frame">
+        <div class="row">
+            <div class="col-md-12">
+                <form class="form-inline" role="form" action="/user" method="POST" id="login_enroll">
+                    <div class="form-group">
+                        <label>
+                            用户名
+                        </label>
+                        <input type="text" class="form-control" name="name" id="name">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            密码
+                        </label>
+                        <input type="password" class="form-control" name="password" id="password">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">登录</button>
+                        <button type="button" class="btn btn-info" id="enroll">注册</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--  -->
+    <div class="container" style="margin-top: 20px;">
+        <div class="row" style="height: 100%;">
+            <div id="msgs" style="padding-bottom: 0px;margin-bottom: 0px;padding-top: 0px;margin-top: 0px;" class="col-md-10 jumbotron pre-scrollable well">
+            </div>
+            <div id="users" class="col-md-2 jumbotron pre-scrollable " style="height: 1000px; padding: 20px;margin: 0px;" id="users" style="position: relative;">
+                <!-- <span style="position: absolute;margin: 10px;" class="">用户</span> -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <form role="form" class="form-horizontal" id="chat">
+                    <div class="form-horizontal">
+                        <input type="text" name="msg" class="form-control" autocomplete="off" id="context_msg">
+                        <button type="submit" class="btn btn-primary btn-block" id="send_msg" disabled="disabled">
+                            <span class="">发送</span>
+                        </button>
+                        <!-- 房间选择 -->
+                        <!-- <select id="menu_room">
+                            <option>公共</option>
+                        </select> -->
+                        <!--  -->
+                        <!-- 房间创建按钮 -->
+                        <!-- <button id="create_room" class="btn btn-default btn-success" disabled="disabled">创建</button> -->
+                        <!--  -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--  -->
+    <div class="modal fade" id="enroll_dialog" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="container">
+                    <form class="form-horizontal" role="form" id="enroll_form" action="/enroll" method="POST">
+                        <div class="form-group">
+                            <label>用户名</label>
+                            <input name="name" type="text" class="form-control" id="enroll_name">
+                        </div>
+                        <div class="form-group">
+                            <label>密码</label>
+                            <input name="password" type="password" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>确认密码</label>
+                            <input name="affirm" type="password" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>性别</label>
+                            <div class="radio">
+                                <label class="radio-inline">
+                                    <input type="radio" name="sex" value="男">男
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="sex" value="女">女
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>昵称</label>
+                            <input name="alias" type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block" id="enroll_post">注册</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 添加房间 -->
+    <div class="modal fade" id="room_dialog" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="container">
+                    <form class="form-horizontal" role="form" id="room_form" action="/room" method="POST">
+                        <div class="form-group">
+                            <label>房间名</label>
+                            <input name="space" type="text" class="form-control" id="room_name">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary form-control" id="room_post">注册</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--   -->
+    <!-- 底部导航栏 -->
+    <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation" id="nav_rooms" style="display: none;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#"></a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">
+                    <span class="glyphicon glyphicon-home"></span>
+                </a></li>
+                    <li class="active" id="show_room"><a href="#" id="">public</a></li>
+                    <li><a href="#" id="create_room">创建房间</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        房间 <b class="caret" id="rooms_count"></b>
+                    </a>
+                        <ul class="dropdown-menu pre-scrollable" id="rooms_list">
+                            <!--  -->
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!--  -->
 </body>
+
 </html>

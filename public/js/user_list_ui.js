@@ -3,20 +3,36 @@ var user_list_ui = function() {
 	var $users;
 	var _hb;
 	var __io;
-	var _user_list;
+	var _is_init = false;
 
 	function _init(_io, hb, userList) {
+		if (_is_init) {
+			_replace_user_list(userList);
+			return this;
+		}
+		_is_init = true;
 		__io = _io;
 		_hb = hb;
 		_cache();
 		_bindEvent();
 		if (userList) {
-			_user_list = userList;
-			Object.keys(userList).forEach(function(key) {
-				_add(userList[key]);
-			});
+			_append_user_list(userList);
 		}
 		return this;
+	}
+
+
+	function _append_user_list(userList) {
+		Object.keys(userList).forEach(function(key) {
+			_add(userList[key]);
+		});
+	}
+
+	function _replace_user_list(userList) {
+		var data = {
+			users: userList,
+		}
+		_hb.combine_replace($tem_user, $users, data);
 	}
 
 	function _bindEvent() {
@@ -41,7 +57,7 @@ var user_list_ui = function() {
 		}
 		_hb.combine_append($tem_user, $users, data);
 	}
-
+	//点亮
 	function _online(user) {
 		var $btns = $users.find('Button');
 		$btns.each(function(index, item) {

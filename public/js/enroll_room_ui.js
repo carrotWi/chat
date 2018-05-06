@@ -8,8 +8,13 @@ var enroll_room_ui = function() {
 	var $enroll_dialog;
 	var $create_room;
 	var _io;
+	var _is_init = false;
 
 	function _init(io) {
+		// if (_is_init) {
+		// 	return ;
+		// }
+		// _is_init = true;
 		_io = io;
 		_cache();
 		_bindEvent();

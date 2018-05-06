@@ -9,14 +9,8 @@ window.onload = function() {
 	_io.on('online_user_list', function(data) {
 		user_list_ui.update_online_user(data);
 	});
-	var _msg_list = false;
 	_io.on('msg_list', function(data) {
-		if (!_msg_list) {
-			char_ui.init(_io, hb, data);
-			_msg_list = true;
-		} else {
-			char_ui.replace_msg_list(data);
-		}
+		char_ui.init(_io, hb, data);
 	});
 	_io.on('room_list', function(data) {
 		nav_ui.init(_io, hb, data);

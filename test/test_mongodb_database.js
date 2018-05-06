@@ -2,18 +2,18 @@ var database = require('../libs/chat_database.js');
 var m = require('../libs/chat_module.js');
 var tools = require('../tools/index.js')
 var u = new m.User().init({
-	'id' : 125,
-	'password' : '222',
-	'name' : 'root',
+	'id': 125,
+	'password': '222',
+	'name': 'root',
 });
 var r = new m.Room().init({
-	'name' : 'public',
-	'space' : '/',
+	'name': 'public',
+	'space': '/',
 });
 var msg = new m.Msg().init({
-	user_id : 136,
-	text : '136',
-	room_id : '53',
+	user_id: 136,
+	text: '136',
+	room_id: '53',
 });
 // database.add('msg',new m.Msg('text',111,111,111),function (err) {
 // 	console.log(err);
@@ -33,7 +33,6 @@ var msg = new m.Msg().init({
 // 		}
 // 	});
 // });
-
 
 
 

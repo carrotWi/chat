@@ -7,8 +7,15 @@ var nav_ui = function() {
 	var $count;
 	var $create_room_btn;
 	var $body;
+	var $show_room;
+	var _is_init = false;
+	
 
 	function _init(io, hb, romm_list) {
+		if (_is_init) {
+			return;
+		}
+		_is_init = true;
 		_hb = hb;
 		_io = io;
 		_cache();
@@ -40,7 +47,7 @@ var nav_ui = function() {
 		_io.emit('switch_room', room);
 	}
 
-	function _show_enroll_room_handle() {
+	function _show_enroll_room_handle(e) {
 		enroll_room_ui.init(_io);
 	}
 	//当前所在房间
@@ -62,9 +69,26 @@ var nav_ui = function() {
 		$count = $('#rooms_count');
 		$create_room_btn = $('#create_room');
 		$body = $('#nav_rooms');
+		$show_room = $('#show_room');
+	}
+	/*
+		1.更新显示器
+		2.更新列表栏视图
+			1.去掉原来的标记
+			2.打上新的标记
+	 */
+	function _updata_now_room(room) {
+
+	}
+	function update_show(context) {
+		$show_room.text(context);
+	}
+	function updata_flag() {
+		
 	}
 	return {
 		init: _init,
+		updata_now_room: _updata_now_room,
 		// active_room : _active_room,
 	}
 }();

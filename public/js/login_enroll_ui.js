@@ -28,7 +28,7 @@ var login_enroll_ui = function() {
 					if (data.verify) {
 						$frame.slideToggle(1000);
 						char_ui.open();
-						enroll_room_ui.init();
+						enroll_room_ui.init(_io);
 
 						_io.emit('login_success', data.user);
 					} else {
