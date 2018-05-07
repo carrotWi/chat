@@ -152,7 +152,7 @@ module.exports = function() {
 				},
 				function(users, callback) {
 					tools('filter', users, function(u) {
-						return opt.name === u.name;
+						return _has_same(opt,u);
 					}, callback);
 				}
 			], function(err, users) {
@@ -166,6 +166,16 @@ module.exports = function() {
 			cb && cb(err);
 			return;
 		}
+	}
+
+	function _has_same(opt,obj) {
+		var result = false;
+		Object.keys(obj).forEach(function (key) {
+			if (opt[key]) {
+				result = result || (opt[key] === obj[key]);
+			}
+		});
+		return result;
 	}
 
 	function find_rooms(opt, cb) {
@@ -253,7 +263,6 @@ module.exports = function() {
 				}
 				cb && cb(null, user);
 			});
-			cb && cb(null);
 		} catch (err) {
 			cb && cb(err);
 		}

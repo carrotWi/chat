@@ -12,10 +12,12 @@ const socket_user = {};
 const socket_room = {};
 
 var public_room;
-chat_database.find('rooms',{
-	space : 'public',
-},function (err,rooms) {
-	if (err) {throw err;}
+chat_database.find('rooms', {
+	space: 'public',
+}, function(err, rooms) {
+	if (err) {
+		throw err;
+	}
 	public_room = rooms[0];
 });
 //程序入口
@@ -81,7 +83,6 @@ function _switch_room_handle(socket) {
 			function(rooms, callback) {
 				try {
 					var room = rooms[0];
-					debugger
 					//保存现在的房间
 					_save_room(socket, room);
 					var user = socket_user[socket.id];
@@ -92,18 +93,18 @@ function _switch_room_handle(socket) {
 							callback(err);
 							return;
 						}
-						callback(null, room);
+						callback(null, room, user);
 					});
 				} catch (err) {
 					callback(err);
 				}
 			}
-		], function(err, room) {
+		], function(err, room, user) {
 			if (err) {
 				throw err;
 				return;
 			}
-			_refresh(socket, room);
+			_refresh(socket, room, user);
 		});
 	});
 }
@@ -116,10 +117,12 @@ function _switch_room_handle(socket) {
 
  */
 
-function _refresh(socket, room) {
+function _refresh(socket, room, user) {
 	//并发
-	debugger
-	_history_room(socket, room);
+	//发送聊天记录
+	// _history_room(socket, room);
+	//发送用户列表
+	_join_room(socket, room, user);
 }
 
 //登陆成功监听器
@@ -141,23 +144,11 @@ function _login_success_handle(socket) {
 				throw err;
 			}
 			var user = users[0];
-			/**
-					
-				TODO:
-				- 用户最后一次登录房间
-					
-			 */
 
 			//在服务器保存这个用户
 			_save_user(socket, user);
 			//加入房间
-			/**
-			
-				TODO:
-				- find room by user
-				- call _join_room()
-			
-			 */
+
 			async.waterfall([
 				function(callback) {
 					var opt = user;
@@ -254,22 +245,27 @@ function _join_room(socket, room, user) {
 	//把房间历史记录发给这个用户
 	_history_room(socket, room);
 	//把所有用户信息发给这个用户 emit--> user_list
-	var user_list = chat_mysql.all('user', function(err, user_list) {
+	var opt = {
+		room_id: room.id,
+	}
+	var user_list = chat_database.find('users', opt, function(err, user_list) {
+		//发送这个房间的的用户
 		socket.emit('user_list', user_list);
 		//发送在线的用户
 		_emit_online_user_list(socket, room);
 	});
-	
+
 	if (user) {
 		//告诉客户端用户所在的房间
 		//发送一个事件
-		_send_now_room(socket,room);
+		_send_now_room(socket, room);
 		//把用户信息发给全体用户
 		_broadcast_user(socket, user, room);
 	}
 }
-function _send_now_room(socket,room) {
-	socket.emit('now_room',room);
+
+function _send_now_room(socket, room) {
+	socket.emit('now_room', room);
 }
 
 function _broadcast_user(socket, user, room) {

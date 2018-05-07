@@ -98,17 +98,24 @@
             <div class="col-md-12">
                 <form role="form" class="form-horizontal" id="chat">
                     <div class="form-horizontal">
-                        <input type="text" name="msg" class="form-control" autocomplete="off" id="context_msg">
+                        <textarea type="text" name="msg" class="form-control " autocomplete="off" id="context_msg"></textarea>
+                        <!-- 发送按钮 -->
                         <button type="submit" class="btn btn-primary btn-block" id="send_msg" disabled="disabled">
                             <span class="">发送</span>
                         </button>
-                        <!-- 房间选择 -->
-                        <!-- <select id="menu_room">
-                            <option>公共</option>
-                        </select> -->
                         <!--  -->
-                        <!-- 房间创建按钮 -->
-                        <!-- <button id="create_room" class="btn btn-default btn-success" disabled="disabled">创建</button> -->
+                        <!-- 发送的消息类型 -->
+                        <!-- <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" 
+                                    data-toggle="dropdown">
+                                默认 <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">功能</a></li>
+                                <li><a href="#">另一个功能</a></li>
+                                <li><a href="#">其他</a></li>
+                            </ul>
+                        </div> -->
                         <!--  -->
                     </div>
                 </form>

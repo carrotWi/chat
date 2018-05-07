@@ -299,7 +299,7 @@ function _update_user(user, cb) {
 				//改 room_id
 				if (user.room_id) {
 					var value = [user.room_id, user.id];
-					var sql = 'UPDATE user_name_password SET room_id=? WHERE user_id=?;';
+					var sql = 'UPDATE user_room SET room_id=? WHERE user_id=?;';
 					connection.query(sql, value, callback);
 				} else {
 					callback(null, null, null);
