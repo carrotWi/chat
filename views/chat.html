@@ -13,6 +13,7 @@
     <script src="../public/libs/socket.io.dev.js"></script>
     <script src="../public/libs/jquery-validation-1.17.0/dist/jquery.validate.js"></script>
     <script src="../public/libs/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <script src="../public/libs/kyo4311-jquery.qqface-32bf148/jquery.qqface.min.js" type="text/javascript" charset="utf-8" async defer></script>
     <!-- sdn -->
     <!-- <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -21,16 +22,17 @@
     <!-- 中文提示包 -->
     <script src="../public/libs/jquery-validation-1.17.0/dist/localization/messages_zh.js"></script>
     <!--  -->
-    <script src="../public/js/menu_room.js"></script>
-    <script src="../public/js/_io.js"></script>
-    <script src="../public/js/tip_ui.js"></script>
-    <script src="../public/js/login_enroll_ui.js"></script>
-    <script src="../public/js/char_ui.js"></script>
-    <script src="../public/js/user_list_ui.js"></script>
-    <script src="../public/js/nav_ui.js"></script>
-    <script src="../public/js/hb.js"></script>
-    <script src="../public/js/enroll_ui.js"></script>
-    <script src="../public/js/enroll_room_ui.js"></script>
+    <script src="../public/js/chat/qq.js" type="text/javascript" charset="utf-8" async defer></script>
+    <script src="../public/js/chat/menu_room.js"></script>
+    <script src="../public/js/chat/_io.js"></script>
+    <script src="../public/js/chat/tip_ui.js"></script>
+    <script src="../public/js/chat/login_enroll_ui.js"></script>
+    <script src="../public/js/chat/char_ui.js"></script>
+    <script src="../public/js/chat/user_list_ui.js"></script>
+    <script src="../public/js/chat/nav_ui.js"></script>
+    <script src="../public/js/chat/hb.js"></script>
+    <script src="../public/js/chat/enroll_ui.js"></script>
+    <script src="../public/js/chat/enroll_room_ui.js"></script>
     <script type="text/x-handlebars" id="msg">
         {{#msg_p msgs}}
         <p class="msg">{{name}} : {{text}}</p>
@@ -50,6 +52,11 @@
         {{#room_option rooms}}
         <li class="" data-user-id="{{id}}"><a href="#">{{name}}</a></li>
         {{/room_option}}
+    </script>
+    <script type="text/x-handlebars" charset="utf-8" id="qq_msgs">
+        {{#qq_option qqs}}
+        <img src="{{src}}" alt="">
+        {{/qq_option}}
     </script>
     <!-- <script type="text/x-handlebars" id="tip">
         <div class="alert {{class}}">{{msg}}</div>
@@ -98,12 +105,17 @@
             <div class="col-md-12">
                 <form role="form" class="form-horizontal" id="chat">
                     <div class="form-horizontal">
-                        <textarea type="text" name="msg" class="form-control " autocomplete="off" id="context_msg"></textarea>
+                        <textarea type="text" name="msg" class="form-control " autocomplete="off" id="context_msg" spellcheck="false"></textarea>
                         <!-- 发送按钮 -->
                         <button type="submit" class="btn btn-primary btn-block" id="send_msg" disabled="disabled">
                             <span class="">发送</span>
                         </button>
-                        <!--  -->
+                        <!-- 表情 -->
+                        <a href="javascript:;" id="face">表情</a>
+                        <!-- 表情 -->
+                        <!-- 表情的中间表单 -->
+                        <!-- <input type="hidden" name="qq_context" id="qq_context"> -->
+                        <!-- 表情的中间表单 -->
                         <!-- 发送的消息类型 -->
                         <!-- <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" 

@@ -1,6 +1,7 @@
 window.onload = function() {
 	_io.init('http://localhost:8088');
 	hb.init();
+	qq.init();
 	tip_ui.init();
 	login_enroll_ui.init(_io);
 	_io.on('user_list', function(data) {
@@ -47,6 +48,12 @@ var hb = function() {
 				return option.fn(value);
 			}).join(' ');
 		});
+		Handlebars.registerHelper('qq_option', function(context, option) {
+			return context.map(function(value) {
+				return option.fn(value);
+			}).join(' ');
+		});
+
 		return this;
 	}
 
