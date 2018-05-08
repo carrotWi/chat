@@ -3,6 +3,7 @@ window.onload = function() {
 	hb.init();
 	qq.init();
 	tip_ui.init();
+	history_list.init();
 	login_enroll_ui.init(_io);
 	_io.on('user_list', function(data) {
 		user_list_ui.init(_io, hb, data);

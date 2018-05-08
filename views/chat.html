@@ -5,6 +5,9 @@
     <meta charset="utf-8">
     <title>chat</title>
     <link rel="stylesheet" href="../public/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <!-- 日历的样式 -->
+    <link href="../public/libs/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet">
+    <!-- 日历的样式 -->
     <!-- 导入字体 -->
     <!--  -->
     <script type="text/javascript" src="../public/libs/handlebars-v4.0.11.js"></script>
@@ -33,6 +36,7 @@
     <script src="../public/js/chat/hb.js"></script>
     <script src="../public/js/chat/enroll_ui.js"></script>
     <script src="../public/js/chat/enroll_room_ui.js"></script>
+    <script src="../public/js/chat/history_list.js" type="text/javascript" charset="utf-8" async defer></script>
     <script type="text/x-handlebars" id="msg">
         {{#msg_p msgs}}
         <p class="msg">{{name}} : {{{text}}}</p>
@@ -55,8 +59,7 @@
     </script>
     <script type="text/x-handlebars" charset="utf-8" id="qq_msgs">
         {{#qq_option qqs}}
-        <img src="{{src}}" alt="">
-        {{/qq_option}}
+        <img src="{{src}}" alt=""> {{/qq_option}}
     </script>
     <!-- <script type="text/x-handlebars" id="tip">
         <div class="alert {{class}}">{{msg}}</div>
@@ -107,16 +110,16 @@
                     <div class="form-horizontal">
                         <!-- <textarea type="text" name="msg" class="form-control " autocomplete="off" id="context_msg" spellcheck="false"> -->
                         </textarea>
-                        <div  contenteditable="true" name="msg" class="form-control pre-scrollable" autocomplete="off" id="context_msg" spellcheck="false" style="height: 50px; margin-top: 20px;"></div>
+                        <div contenteditable="true" name="msg" class="form-control pre-scrollable" autocomplete="off" id="context_msg" spellcheck="false" style="height: 50px; margin-top: 20px;"></div>
                         <!-- 发送按钮 -->
                         <button type="submit" class="btn btn-primary btn-block" id="send_msg" disabled="disabled">
                             <span class="">发送</span>
                         </button>
                         <!-- 表情 -->
-                        <a href="javascript:;" id="face">表情</a>
+                        <a href="javascript:;" id="face"><span class=" btn-default btn-lg btn">表情</span></a>
                         <!-- 表情 -->
                         <!-- 表情的中间表单 -->
-                        <textarea  style="display: none;" id="qq_context"></textarea>
+                        <textarea style="display: none;" id="qq_context"></textarea>
                         <!-- 表情的中间表单 -->
                         <!-- 发送的消息类型 -->
                         <!-- <div class="btn-group">
@@ -209,6 +212,12 @@
                 </a></li>
                     <li class="active" id="show_room"><a href="#" id="">public</a></li>
                     <li><a href="#" id="create_room">创建房间</a></li>
+                    <!-- 聊天记录 -->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">聊天记录</a>
+                       <div id="datepicker" class="dropdown-menu"></div>
+                    </li>
+                    <!-- 聊天记录 -->
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         房间 <b class="caret" id="rooms_count"></b>
