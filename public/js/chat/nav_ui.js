@@ -94,7 +94,6 @@ var nav_ui = function() {
 	}
 	//去除原来的标记
 	function remove_flag() {
-		debugger
 		if ($now_room) {
 			$now_room.removeClass('active');
 		}
@@ -109,7 +108,6 @@ var nav_ui = function() {
 				$now_room = $that.parent();
 			}
 		});
-		debugger
 		$now_room.addClass('active');
 	}
 	return {

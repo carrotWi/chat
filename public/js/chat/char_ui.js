@@ -81,6 +81,7 @@ var char_ui = function() {
 		}
 		_hb.combine_append($tem_msg, $msgs, data);
 		_bottom($msgs);
+		qq.clean();
 	}
 
 	function _append(context) {

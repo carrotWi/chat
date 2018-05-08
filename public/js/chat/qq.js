@@ -3,7 +3,7 @@ var qq = function() {
 	var _imgPath = '/public/libs/kyo4311-jquery.qqface-32bf148/gif/';
 	var $handle;
 	//隐藏的中间表单
-	// var $qq_context;
+	var $qq_context;
 
 	var face_map = [
 		'weixiao,微笑',
@@ -112,39 +112,65 @@ var qq = function() {
 		_bindEvent();
 	}
 
+
 	function _bindEvent() {
-		$handle.on('click',_click_handle);
+		$handle.click(function(event) {
+			$textarea.focusin(_china_to_en_handle);
+		});
+		//失去焦点同步 value AND innerHTML
+		$textarea.focusout(function(event) {
+			_refresh();
+		});
 		$.qqface({
 			imgPath: _imgPath,
 			textarea: $textarea,
 			handle: $handle,
 		});
 	}
+
+	function _refresh() {
+		var html = $textarea.html();
+		$textarea.val(html);
+
+	}
+
 	function _click_handle(e) {
 		$layer = $('.jquery-qqface-layer');
 		var $i = $layer.find('i');
-		debugger
 		$i.click(_china_to_en_handle);
 	}
 
 	function _china_to_en_handle(e) {
-		debugger
-		var context = $textarea.val();
-		var src = _format_img_src(context);
-		if (!src) {return}
-		context = '<img src="' + src + '">';
-		debugger
-		$textarea.val(context);
+		setTimeout(function() {
+			var context = $textarea.val();
+			context = _split_undefined(context);
+			context = _format_img_src(context);
+			if (!context.trim()) {
+				return
+			}
+			$textarea.html(context);
+			$textarea.val(context);
+
+		}, 100);
+		$textarea.off('focusin');
+
+	}
+
+
+	function _split_undefined(str) {
+		str = str.replace(/undefined/g, '');
+		return str;
 	}
 
 	function _format_img_src(str) {
-		if (!str) {return}
-		var rex1 = new RegExp(/\[:([\u4e00-\u9fa5]+)\]/g);
-		str = rex1.exce(str)[0];
-		var rex2 = new RegExp(/[\u4e00-\u9fa5]+/g)
-		str = rex2.exce(str)[0];
-		str = _name_map(str);
-		return _imgPath + str + '.gif';
+		if (!str) {
+			return
+		}
+		var rex1 = new RegExp(/(\[:([\u4e00-\u9fa5]+)\])/g);
+		str = str.replace(rex1, function(a, b, c) {
+			return '<img src="' + _imgPath + _name_map(c) + '.gif">';
+		});
+		return str;
 	}
 
 	function _name_map(china) {
@@ -159,8 +185,8 @@ var qq = function() {
 		for (var i = 0; i < face_map.length; i++) {
 			var map = face_map[i];
 			var pair = map.split(',');
-			var key = pair[0];
-			var value = pair[1];
+			var key = pair[1];
+			var value = pair[0];
 			obj[key] = value;
 		}
 		return obj;
@@ -169,10 +195,15 @@ var qq = function() {
 	function _cache() {
 		$textarea = $('#context_msg');
 		$handle = $('#face');
-		// $qq_context = $('#qq_context');
+		$qq_context = $('#qq_context');
 	}
 
+	function _clean() {
+		$textarea.html('');
+		_refresh();
+	}
 	return {
 		init: _init,
+		clean: _clean,
 	}
 }()

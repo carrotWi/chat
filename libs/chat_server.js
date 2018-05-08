@@ -11,6 +11,7 @@ const socket_user = {};
 //在线的房间
 const socket_room = {};
 
+
 var public_room;
 chat_database.find('rooms', {
 	space: 'public',
@@ -20,6 +21,7 @@ chat_database.find('rooms', {
 	}
 	public_room = rooms[0];
 });
+
 //程序入口
 module.exports = function(server) {
 	io = socketio.listen(server);

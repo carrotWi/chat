@@ -35,7 +35,7 @@
     <script src="../public/js/chat/enroll_room_ui.js"></script>
     <script type="text/x-handlebars" id="msg">
         {{#msg_p msgs}}
-        <p class="msg">{{name}} : {{text}}</p>
+        <p class="msg">{{name}} : {{{text}}}</p>
         {{/msg_p}}
     </script>
     <script type="text/x-handlebars" id="user">
@@ -105,7 +105,9 @@
             <div class="col-md-12">
                 <form role="form" class="form-horizontal" id="chat">
                     <div class="form-horizontal">
-                        <textarea type="text" name="msg" class="form-control " autocomplete="off" id="context_msg" spellcheck="false"></textarea>
+                        <!-- <textarea type="text" name="msg" class="form-control " autocomplete="off" id="context_msg" spellcheck="false"> -->
+                        </textarea>
+                        <div  contenteditable="true" name="msg" class="form-control pre-scrollable" autocomplete="off" id="context_msg" spellcheck="false" style="height: 50px; margin-top: 20px;"></div>
                         <!-- 发送按钮 -->
                         <button type="submit" class="btn btn-primary btn-block" id="send_msg" disabled="disabled">
                             <span class="">发送</span>
@@ -114,7 +116,7 @@
                         <a href="javascript:;" id="face">表情</a>
                         <!-- 表情 -->
                         <!-- 表情的中间表单 -->
-                        <!-- <input type="hidden" name="qq_context" id="qq_context"> -->
+                        <textarea  style="display: none;" id="qq_context"></textarea>
                         <!-- 表情的中间表单 -->
                         <!-- 发送的消息类型 -->
                         <!-- <div class="btn-group">

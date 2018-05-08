@@ -86,16 +86,17 @@ function _add_user(user, cb) {
 				connection.query(sql, value, function(err, result, filed) {
 					callback(err, result, filed);
 				});
-			},
-			function(result, filed, callback) {
-				//存 socket_id
-				user.socket_id = '';
-				var value = [user.id, user.socket_id];
-				var sql = 'INSERT INTO user_socket (user_id,socket_id) VALUES (?,?);';
-				connection.query(sql, value, function(err, result, filed) {
-					callback(err, result, filed);
-				});
 			}
+			// ,
+			// function(result, filed, callback) {
+			// 	//存 socket_id
+			// 	user.socket_id = '';
+			// 	var value = [user.id, user.socket_id];
+			// 	var sql = 'INSERT INTO user_socket (user_id,socket_id) VALUES (?,?);';
+			// 	connection.query(sql, value, function(err, result, filed) {
+			// 		callback(err, result, filed);
+			// 	});
+			// }
 		], function(err, result, filed) {
 			if (cb) {
 				if (err) {
@@ -106,7 +107,7 @@ function _add_user(user, cb) {
 			}
 		});
 	} else {
-		var err = new Error('name or password  undefined ');
+		var err = new Error('name  password  ');
 		cb(err)
 	}
 
