@@ -69,7 +69,7 @@
 
 <body>
     <!--  -->
-    <!--  -->
+    <!-- 顶部登陆 -->
     <div class="" id="tip"></div>
     <div class="container" style="margin-top: 20px;" id="login_enroll_frame">
         <div class="row">
@@ -95,51 +95,85 @@
             </div>
         </div>
     </div>
-    <!--  -->
+    <!-- 顶部登陆 -->
     <div class="container" style="margin-top: 20px;">
         <div class="row" style="height: 100%;">
-            <div id="msgs" style="padding-bottom: 0px;margin-bottom: 0px;padding-top: 0px;margin-top: 0px;" class="col-md-10 jumbotron pre-scrollable well">
-            </div>
-            <div id="users" class="col-md-2 jumbotron pre-scrollable " style="height: 1000px; padding: 20px;margin: 0px;" id="users" style="position: relative;">
-                <!-- <span style="position: absolute;margin: 10px;" class="">用户</span> -->
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <form role="form" class="form-horizontal" id="chat">
-                    <div class="form-horizontal">
-                        <!-- <textarea type="text" name="msg" class="form-control " autocomplete="off" id="context_msg" spellcheck="false"> -->
-                        </textarea>
-                        <div contenteditable="true" name="msg" class="form-control pre-scrollable" autocomplete="off" id="context_msg" spellcheck="false" style="height: 50px; margin-top: 20px;"></div>
-                        <!-- 发送按钮 -->
-                        <button type="submit" class="btn btn-primary btn-block" id="send_msg" disabled="disabled">
-                            <span class="">发送</span>
-                        </button>
-                        <!-- 表情 -->
-                        <a href="javascript:;" id="face"><span class=" btn-default btn-lg btn">表情</span></a>
-                        <!-- 表情 -->
-                        <!-- 表情的中间表单 -->
-                        <textarea style="display: none;" id="qq_context"></textarea>
-                        <!-- 表情的中间表单 -->
-                        <!-- 发送的消息类型 -->
-                        <!-- <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" 
-                                    data-toggle="dropdown">
-                                默认 <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">功能</a></li>
-                                <li><a href="#">另一个功能</a></li>
-                                <li><a href="#">其他</a></li>
-                            </ul>
-                        </div> -->
-                        <!--  -->
+            <div class="col-md-10">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="msgs" style="padding-bottom: 0px;margin-bottom: 0px;padding-top: 0px;margin-top: 0px;height: 1000px" class="col-md-12 jumbotron pre-scrollable well">
+                        </div>
+                        <form role="form" class="form-horizontal" id="chat">
+                            <div class="form-horizontal">
+                                <div class="col-md-12" style="padding: 0px;">
+                                    <!-- 表情 -->
+                                    <a href="javascript:;" id="face"><span class=" btn-default btn-lg btn">表情</span></a>
+                                    <!-- 表情 -->
+                                    <!-- 图片 -->
+                                    <a href="javascript:;"><span class=" btn-default btn-lg btn glyphicon glyphicon-picture">图片</span></a>
+                                    <!-- 图片 -->
+                                    <!-- 音乐 -->
+                                    <a href="javascript:;"><span class=" btn-default btn-lg btn glyphicon glyphicon-music">音乐</span></a>
+                                    <!-- 音乐 -->
+                                    <!-- 视频 -->
+                                    <a href="javascript:;"><span class=" btn-default btn-lg btn glyphicon glyphicon-sd-video">视频</span></a>
+                                    <!-- 视频 -->
+                                    <!-- 位置 -->
+                                    <a href="javascript:;"><span class=" btn-default btn-lg btn glyphicon glyphicon-map-marker">位置</span></a>
+                                    <!-- 位置 -->
+                                    <!-- 用户 -->
+                                    <a href="javascript:;"><span class=" btn-default btn-lg btn glyphicon glyphicon-user">用户</span></a>
+                                    <!-- 用户 -->
+                                    <!-- 语音 -->
+                                    <a href="javascript:;" id="micro"><span class=" btn-default btn-lg btn glyphicon glyphicon-bullhorn">语音</span></a>
+                                    <!-- 语音 -->
+                                    <!-- 文件 -->
+                                    <a href="javascript:;" id="micro"><span class=" btn-default btn-lg btn">文件</span></a>
+                                    <!-- 文件 -->
+                                    <!-- 截屏 -->
+                                    <a href="javascript:;" id="micro"><span class=" btn-default btn-lg btn ">截屏</span></a>
+                                    <!-- 截屏 -->
+                                </div>
+                                <!-- 表情的中间表单 -->
+                                <textarea style="display: none;" id="qq_context"></textarea>
+                                <!-- 表情的中间表单 -->
+                                <!-- 发送框 -->
+                                <div contenteditable="true" name="msg" class="form-control pre-scrollable" autocomplete="off" id="context_msg" spellcheck="false" style="height: 50px; "></div>
+                                <!-- 发送框 -->
+                                <!-- 发送按钮 -->
+                                <button type="submit" class="btn btn-primary btn-block" id="send_msg" disabled="disabled">
+                                    <span class="">发送</span>
+                                </button>
+                                <!-- 发送的消息类型 -->
+                                <!-- <div class="btn-group">
+                                       <button type="button" class="btn btn-default dropdown-toggle" 
+                                               data-toggle="dropdown">
+                                           默认 <span class="caret"></span>
+                                       </button>
+                                       <ul class="dropdown-menu" role="menu">
+                                           <li><a href="#">功能</a></li>
+                                           <li><a href="#">另一个功能</a></li>
+                                           <li><a href="#">其他</a></li>
+                                       </ul>
+                                   </div> -->
+                                <!--  -->
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="users" class="col-md-12 jumbotron pre-scrollable " style="height: 2000px; padding: 20px;margin: 0px;" id="users" style="position: relative;">
+                            <!-- <span style="position: absolute;margin: 10px;" class="">用户</span> -->
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <!--  -->
+    <!-- 注册弹出框 -->
     <div class="modal fade" id="enroll_dialog" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -180,7 +214,8 @@
             </div>
         </div>
     </div>
-    <!-- 添加房间 -->
+    <!-- 注册弹出框 -->
+    <!-- 添加房间弹出框 -->
     <div class="modal fade" id="room_dialog" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -198,7 +233,7 @@
             </div>
         </div>
     </div>
-    <!--   -->
+    <!--  添加房间弹出框 -->
     <!-- 底部导航栏 -->
     <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation" id="nav_rooms" style="display: none;">
         <div class="container-fluid">
@@ -215,7 +250,7 @@
                     <!-- 聊天记录 -->
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">聊天记录</a>
-                       <div id="datepicker" class="dropdown-menu"></div>
+                        <div id="datepicker" class="dropdown-menu"></div>
                     </li>
                     <!-- 聊天记录 -->
                     <li class="dropdown">
@@ -230,7 +265,7 @@
             </div>
         </div>
     </nav>
-    <!--  -->
+    <!-- 底部导航栏 -->
 </body>
 
 </html>
