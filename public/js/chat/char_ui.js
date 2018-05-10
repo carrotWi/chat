@@ -7,7 +7,8 @@ var char_ui = function() {
 	var __io;
 	var _hb;
 	var _is_init = false;
-
+	var $chat_layout;
+	var _is_click_user = false;
 
 	function _init(_io, hb, msg_list) {
 		if (_is_init) {
@@ -68,6 +69,7 @@ var char_ui = function() {
 		$form = $('#chat');
 		$context = $('#context_msg');
 		$tem_msg = $('#msg');
+		$chat_layout = $('#chat_layout');
 	}
 
 	function _add(context) {
@@ -120,6 +122,19 @@ var char_ui = function() {
 	function _clean() {
 
 	}
+
+	function _toggle() {
+		debugger
+		if (!_is_click_user) {
+			_is_click_user = true;
+			$chat_layout.removeClass('col-md-12');
+			$chat_layout.addClass('col-md-9');
+		} else {
+			_is_click_user = false;
+			$chat_layout.removeClass('col-md-9');
+			$chat_layout.addClass('col-md-12');
+		}
+	}
 	return {
 		init: _init,
 		send: _add,
@@ -127,5 +142,6 @@ var char_ui = function() {
 		append: _append,
 		append_msg_list: _append_msg_list,
 		replace_msg_list: _replace_msg_list,
+		toggle : _toggle,
 	};
 }();

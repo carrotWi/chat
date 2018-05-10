@@ -4,6 +4,8 @@ var user_list_ui = function() {
 	var _hb;
 	var __io;
 	var _is_init = false;
+	var $user_layout;
+	var _is_click_user = false;
 
 	function _init(_io, hb, userList) {
 		if (_is_init) {
@@ -49,6 +51,7 @@ var user_list_ui = function() {
 	function _cache() {
 		$tem_user = $('#user');
 		$users = $('#users');
+		$user_layout = $('#user_layout');
 	}
 
 	function _add(user) {
@@ -89,11 +92,22 @@ var user_list_ui = function() {
 			});
 		}
 	}
+
+	function _toggle() {
+		if (!_is_click_user) {
+			_is_click_user = true;
+			$user_layout.removeClass('fade');
+		} else {
+			_is_click_user = false;
+			$user_layout.addClass('fade');
+		}
+	}
 	return {
 		init: _init,
 		add: _add,
 		update_online_user: _update_online_user,
 		remove: _remove,
 		online: _online,
+		toggle: _toggle,
 	}
 }();

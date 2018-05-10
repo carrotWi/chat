@@ -1,9 +1,6 @@
-var img_btn = function () {
+var img_btn = function() {
 	var $btn;
 
-	var _dialog = function () {
-		
-	}();
 
 	function _init() {
 		_cache();
@@ -12,14 +9,19 @@ var img_btn = function () {
 
 	function _cache() {
 		$btn = $('#img_btn');
+
 	}
 
 	function _bind_event() {
-		$btn.click();
+		$btn.click(show_hadnle);
+
+	}
+
+	function show_hadnle(e) {
+		img_dialog.init();
 	}
 
 	return {
-
+		init: _init,
 	}
 }();
-
