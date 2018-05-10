@@ -13,7 +13,6 @@ var file_btn = function() {
 	}
 
 	function _bind_event() {
-		debugger
 		$btn.click(show_hadnle);
 
 	}

@@ -239,7 +239,7 @@
     <div class="modal fade bott" id="img_dialog" tabindex="-1" role="dialog">
         <div class="modal-content">
             <div class="container">
-                <form class="" role="form" id="img_form" action="/enroll" method="POST">
+                <form class="" role="form" id="img_form" action="/file" method="POST">
                     <label class="control-label">图片</label>
                     <input type="file" class="file" id="img_file" name="img_name">
                     <div class="form-group">
@@ -250,21 +250,7 @@
         </div>
     </div>
     <!-- 图片上传 -->
-    <!-- 文件上传 -->
-    <div class="modal fade bott" id="file_dialog" tabindex="-1" role="dialog">
-        <div class="modal-content">
-            <div class="container">
-                <form class="" role="form" id="file_form" action="/enroll" method="POST">
-                    <label class="control-label">文件</label>
-                    <input type="file" class="file" id="file_file" name="file_name">
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary " id="file_post">提交</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- 文件上传 -->
+   
     <!-- 添加房间弹出框 -->
     <div class="modal fade" id="room_dialog" tabindex="-1" role="dialog">
         <div class="modal-dialog">
@@ -315,7 +301,24 @@
             </div>
         </div>
     </nav>
+
+    
     <!-- 底部导航栏 -->
+    
+
+
+    <!-- 文件上传 -->
+    <div class="modal fade bott" id="file_dialog" tabindex="-1" role="dialog">
+        <div class="modal-content">
+            <div class="container">
+                <form class="" role="form" id="file_form" action="/file" method="POST" enctype="multipart/form-data">
+                    <label class="control-label">文件</label>
+                    <input type="file" class="file" id="file_file" name="file_name">
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 文件上传 -->
 </body>
 
 </html>

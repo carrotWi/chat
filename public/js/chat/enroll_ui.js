@@ -47,13 +47,6 @@ var enroll_ui = function() {
 			},
 		});
 	}
-
-	function log(msg) {
-		console.log(msg);
-	}
-
-	function _bindEvent() {}
-
 	function _form_handle(form) {
 		var $that = $(form);
 		var opt = {
@@ -75,6 +68,14 @@ var enroll_ui = function() {
 		// .fail(function() { log("fail"); })
 		// .always(function() { log("complete"); });
 	}
+
+	function log(msg) {
+		console.log(msg);
+	}
+
+	function _bindEvent() {}
+
+	
 
 	function _cache() {
 		$name = $('#enroll_name');
