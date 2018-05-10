@@ -49,6 +49,7 @@ var history_list = function() {
 
 	function _now() {
 		$history_list.datepicker( "setDate", _now_time );
+		
 	}
 
 	return {
