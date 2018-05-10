@@ -124,7 +124,6 @@ var char_ui = function() {
 	}
 
 	function _toggle() {
-		debugger
 		if (!_is_click_user) {
 			_is_click_user = true;
 			$chat_layout.removeClass('col-md-12');

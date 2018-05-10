@@ -44,7 +44,9 @@
     <script src="../public/js/chat/user_list_ui.js"></script>
     <script src="../public/js/chat/nav_ui.js"></script>
     <script src="../public/js/chat/img_dialog.js" type="text/javascript" charset="utf-8" async defer></script>
-    <<script src="../public/js/chat/user_btn.js" type="text/javascript" charset="utf-8" async defer></script>
+    <script src="../public/js/chat/user_btn.js" type="text/javascript" charset="utf-8" async defer></script>
+    <script src="../public/js/chat/file_btn.js" type="text/javascript" charset="utf-8" async defer></script>
+    <script src="../public/js/chat/file_dialog.js" type="text/javascript" charset="utf-8" async defer></script>
     <script src="../public/js/chat/hb.js"></script>
     <script src="../public/js/chat/enroll_ui.js"></script>
     <script src="../public/js/chat/enroll_room_ui.js"></script>
@@ -110,7 +112,6 @@
         </div>
     </div>
     <!-- 顶部登陆 -->
-
     <!-- 主界面 -->
     <div class="container" style="margin-top: 20px;">
         <div class="row" style="height: 100%;">
@@ -145,7 +146,7 @@
                                         <a href="javascript:;" id="micro"><span class=" btn-default btn-lg btn glyphicon glyphicon-bullhorn">语音</span></a>
                                         <!-- 语音 -->
                                         <!-- 文件 -->
-                                        <a href="javascript:;" id="micro"><span class=" btn-default btn-lg btn">文件</span></a>
+                                        <a href="javascript:;" id="micro"><span class=" btn-default btn-lg btn" id="file_btn">文件</span></a>
                                         <!-- 文件 -->
                                         <!-- 截屏 -->
                                         <a href="javascript:;" id="micro"><span class=" btn-default btn-lg btn ">截屏</span></a>
@@ -192,7 +193,6 @@
         </div>
     </div>
     <!-- 主界面 -->
-
     <!-- 注册弹出框 -->
     <div class="modal fade" id="enroll_dialog" tabindex="-1" role="dialog">
         <div class="modal-dialog">
@@ -235,7 +235,7 @@
         </div>
     </div>
     <!-- 注册弹出框 -->
-    <!-- 图片弹出框 -->
+    <!-- 图片上传 -->
     <div class="modal fade bott" id="img_dialog" tabindex="-1" role="dialog">
         <div class="modal-content">
             <div class="container">
@@ -249,7 +249,22 @@
             </div>
         </div>
     </div>
-    <!-- 图片弹出框 -->
+    <!-- 图片上传 -->
+    <!-- 文件上传 -->
+    <div class="modal fade bott" id="file_dialog" tabindex="-1" role="dialog">
+        <div class="modal-content">
+            <div class="container">
+                <form class="" role="form" id="file_form" action="/enroll" method="POST">
+                    <label class="control-label">文件</label>
+                    <input type="file" class="file" id="file_file" name="file_name">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary " id="file_post">提交</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 文件上传 -->
     <!-- 添加房间弹出框 -->
     <div class="modal fade" id="room_dialog" tabindex="-1" role="dialog">
         <div class="modal-dialog">
@@ -269,7 +284,6 @@
         </div>
     </div>
     <!--  添加房间弹出框 -->
-
     <!-- 底部导航栏 -->
     <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation" id="nav_rooms" style="display: none;">
         <div class="container-fluid">
@@ -302,7 +316,6 @@
         </div>
     </nav>
     <!-- 底部导航栏 -->
-
 </body>
 
 </html>

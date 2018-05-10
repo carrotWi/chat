@@ -23,6 +23,7 @@ const routes = require('./route/index.js');
 app.use(cookie_parser());
 var m_t = new mongo_store(setting.mongodb);
 var session_opt = setting.session(m_t);
+app.use(express.bodyParser());
 app.use(session(session_opt));
 app.use('/', routes);
 app.use('/public', express.static('public'));
