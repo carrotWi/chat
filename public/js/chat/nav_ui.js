@@ -1,5 +1,5 @@
 //底部导航栏
-var nav_ui = function() {
+var nav_ui = function(require) {
 	var _hb;
 	var $select;
 	var _io;
@@ -49,7 +49,7 @@ var nav_ui = function() {
 	}
 
 	function _show_enroll_room_handle(e) {
-		enroll_room_ui.init(_io);
+		require('./enroll_room_ui').init(_io);
 	}
 	//当前所在房间
 	function _active_room(room) {
@@ -115,3 +115,5 @@ var nav_ui = function() {
 		updata_now_room: _updata_now_room,
 	}
 }();
+
+define(nav_ui);

@@ -1,4 +1,4 @@
-	var img_dialog = function() {
+	var img_dialog = function(require) {
 		var $dialog;
 		var _uploadUrl = '';
 		var _img_file;
@@ -31,4 +31,6 @@
 		return {
 			init: _init,
 		}
-	}();
+	}
+
+	define(img_dialog);

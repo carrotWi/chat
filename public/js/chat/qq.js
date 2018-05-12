@@ -1,4 +1,4 @@
-var qq = function() {
+var qq_ui = function(require) {
 	var $textarea;
 	var _imgPath = '/public/libs/kyo4311-jquery.qqface-32bf148/gif/';
 	var $handle;
@@ -206,4 +206,6 @@ var qq = function() {
 		init: _init,
 		clean: _clean,
 	}
-}()
+}
+
+define(qq_ui);

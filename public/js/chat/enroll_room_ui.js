@@ -2,7 +2,7 @@ function log(argument) {
 	console.log(argument);
 }
 //添加房间的表单
-var enroll_room_ui = function() {
+var enroll_room_ui = function(require) {
 	var $form;
 	var $room_name;
 	var $enroll_dialog;
@@ -112,4 +112,6 @@ var enroll_room_ui = function() {
 	return {
 		init: _init,
 	}
-}();
+}
+
+define(enroll_room_ui);

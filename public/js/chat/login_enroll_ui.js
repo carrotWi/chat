@@ -1,4 +1,4 @@
-var login_enroll_ui = function() {
+var login_enroll_ui = function(require) {
 	var $form;
 	var $frame;
 	var $enroll;
@@ -27,8 +27,8 @@ var login_enroll_ui = function() {
 				success: function(data) {
 					if (data.verify) {
 						$frame.slideToggle(1000);
-						char_ui.open();
-						enroll_room_ui.init(_io);
+						require('./char_ui').open();
+						require('./enroll_room_ui').init(_io);
 
 						_io.emit('login_success', data.user);
 					} else {
@@ -45,7 +45,7 @@ var login_enroll_ui = function() {
 			return false;
 		});
 		$enroll.click(function() {
-			enroll_ui.init();
+			require('./enroll_ui').init();
 		});
 	}
 
@@ -75,4 +75,6 @@ var login_enroll_ui = function() {
 	return {
 		init: _init,
 	}
-}();
+}
+
+define(login_enroll_ui);

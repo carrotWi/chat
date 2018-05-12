@@ -1,4 +1,4 @@
-var user_btn = function() {
+var user_btn = function(require) {
 	var $btn;
 	//col-md-3 
 	var _is_click = false;
@@ -22,12 +22,14 @@ var user_btn = function() {
 		//		用户列表的大小
 		//		显示用户列表
 		$btn.toggleClass('active');
-		char_ui.toggle();
-		user_list_ui.toggle();
+		require('./char_ui').toggle();
+		require('./user_list_ui').toggle();
 
 	}
 
 	return {
 		init: _init,
 	}
-}();
+}
+
+define(user_btn);

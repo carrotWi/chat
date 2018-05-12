@@ -4,27 +4,21 @@
 <head>
     <meta charset="utf-8">
     <title>chat</title>
-    <link rel="stylesheet" href="../public/bootstrap-3.3.7-dist/css/bootstrap.css">
-    <!--  -->
-    <link href="../public/libs/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet">
-    <!--  -->
-    <!-- 导入字体 -->
-    <!--  -->
-    <script type="text/javascript" src="../public/libs/handlebars-v4.0.11.js"></script>
     <!-- jqury -->
     <script src="../public/libs/jquery-3.3.1.js"></script>
-    <!-- jq -->
-    <!-- <script src="../public/js/chat/before.js" type="text/javascript" charset="utf-8"  defer></script> -->
-    <script src="../public/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
-    <script src="../public/libs/socket.io.dev.js"></script>
     <script src="../public/libs/jquery-validation-1.17.0/dist/jquery.validate.js"></script>
     <script src="../public/libs/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
-    <script src="../public/libs/kyo4311-jquery.qqface-32bf148/jquery.qqface.min.js" type="text/javascript" charset="utf-8" defer></script>
-    <!-- sdn -->
-    <!-- <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
-        <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-    <!--  -->
+    <script src="../public/libs/kyo4311-jquery.qqface-32bf148/jquery.qqface.min.js" charset="utf-8" defer></script>
+    <link href="../public/libs/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet">
+    <!-- jqury -->
+    <link rel="stylesheet" href="../public/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <script src="../public/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <!-- socket.io -->
+    <script src="../public/libs/socket.io.dev.js" type="text/javascript" charset="utf-8" async defer></script>
+    <!-- socket.io -->
+    <!-- handlebars -->
+    <script type="text/javascript" src="../public/libs/handlebars-v4.0.11.js"></script>
+    <!-- handlebars -->
     <!-- 中文提示包 -->
     <script src="../public/libs/jquery-validation-1.17.0/dist/localization/messages_zh.js"></script>
     <!--  -->
@@ -33,26 +27,22 @@
     <script src="../public/libs/bootstrap-fileinput-master20151222/js/fileinput_locale_zh.js" type="text/javascript" charset="utf-8" defer></script>
     <link rel="stylesheet" type="text/css" href="../public/libs/bootstrap-fileinput-master20151222/css/fileinput.css">
     <!-- file input 插件 -->
-    <script src="../public/js/chat/img_btn.js" type="text/javascript" charset="utf-8" defer></script>
-    <script src="../public/js/chat/chat_buttons.js" type="text/javascript" charset="utf-8" defer></script>
-    <script src="../public/js/chat/qq.js" type="text/javascript" charset="utf-8" defer></script>
-    <script src="../public/js/chat/menu_room.js"></script>
-    <script src="../public/js/chat/_io.js"></script>
-    <script src="../public/js/chat/tip_ui.js"></script>
-    <script src="../public/js/chat/login_enroll_ui.js"></script>
-    <script src="../public/js/chat/char_ui.js"></script>
-    <script src="../public/js/chat/user_list_ui.js"></script>
-    <script src="../public/js/chat/nav_ui.js"></script>
-    <script src="../public/js/chat/img_dialog.js" type="text/javascript" charset="utf-8" async defer></script>
-    <script src="../public/js/chat/user_btn.js" type="text/javascript" charset="utf-8" async defer></script>
-    <script src="../public/js/chat/file_btn.js" type="text/javascript" charset="utf-8" async defer></script>
-    <script src="../public/js/chat/file_dialog.js" type="text/javascript" charset="utf-8" async defer></script>
-    <script src="../public/js/chat/hb.js"></script>
-    <script src="../public/js/chat/enroll_ui.js"></script>
-    <script src="../public/js/chat/enroll_room_ui.js"></script>
-    <script src="../public/js/chat/history_list.js" type="text/javascript" charset="utf-8" defer></script>
     <!-- 入口 -->
-    <script src="../public/js/chat/index.js" type="text/javascript" charset="utf-8" defer></script>
+    <script src="../public/libs/seajs/2.2.0/sea.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+    // Set configuration
+    seajs.config({
+        base: "../public/",
+        alias: {
+            "jquery": 'libs/jquery-3.3.1.js',
+            "io": 'libs/socket.io.dev.js',
+        }
+    });
+
+
+    seajs.use("../public/js/chat/index.js");
+    </script>
+    <!-- 入口 -->
     <script type="text/x-handlebars" id="msg">
         {{#msg_p msgs}}
         <p class="msg">{{name}} : {{{text}}}</p>
@@ -250,7 +240,6 @@
         </div>
     </div>
     <!-- 图片上传 -->
-   
     <!-- 添加房间弹出框 -->
     <div class="modal fade" id="room_dialog" tabindex="-1" role="dialog">
         <div class="modal-dialog">
@@ -301,12 +290,7 @@
             </div>
         </div>
     </nav>
-
-    
     <!-- 底部导航栏 -->
-    
-
-
     <!-- 文件上传 -->
     <div class="modal fade bott" id="file_dialog" tabindex="-1" role="dialog">
         <div class="modal-content">

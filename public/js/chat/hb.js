@@ -1,4 +1,4 @@
-var hb = function() {
+var hb = function(require) {
 
 
 	function _init() {
@@ -45,4 +45,6 @@ var hb = function() {
 		combine_append: _combine_append,
 
 	}
-}()
+}
+
+define(hb)

@@ -1,4 +1,4 @@
-var user_list_ui = function() {
+var user_list_ui = function(require) {
 	var $tem_user;
 	var $users;
 	var _hb;
@@ -41,7 +41,7 @@ var user_list_ui = function() {
 		__io.on('new_user', function(data) {
 			_online(data);
 			var str = '欢迎 : ' + data.name;
-			char_ui.append(str);
+			require('./char_ui').append(str);
 		});
 		__io.on('quit_user', function(data) {
 			_remove(data.name);
@@ -110,4 +110,6 @@ var user_list_ui = function() {
 		online: _online,
 		toggle: _toggle,
 	}
-}();
+}
+
+define(user_list_ui);

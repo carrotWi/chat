@@ -1,4 +1,4 @@
-var file_btn = function() {
+var file_btn = function(require) {
 	var $btn;
 
 
@@ -18,10 +18,12 @@ var file_btn = function() {
 	}
 
 	function show_hadnle(e) {
-		file_dialog.init();
+		require('./file_dialog').init();
 	}
 
 	return {
 		init: _init,
 	}
-}();
+}
+
+define(file_btn);

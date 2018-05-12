@@ -1,4 +1,4 @@
-var enroll_ui = function() {
+var enroll_ui = function(require) {
 	var $form;
 	var $name;
 	var $enroll_dialog;
@@ -85,4 +85,6 @@ var enroll_ui = function() {
 	return {
 		init: _init,
 	}
-}();
+}
+
+define(enroll_ui);

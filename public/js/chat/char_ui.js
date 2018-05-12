@@ -1,4 +1,4 @@
-var char_ui = function() {
+var char_ui = function(require) {
 	var $send;
 	var $msgs;
 	var $tem_msg;
@@ -83,7 +83,7 @@ var char_ui = function() {
 		}
 		_hb.combine_append($tem_msg, $msgs, data);
 		_bottom($msgs);
-		qq.clean();
+		require('./qq').clean();
 	}
 
 	function _append(context) {
@@ -143,4 +143,6 @@ var char_ui = function() {
 		replace_msg_list: _replace_msg_list,
 		toggle : _toggle,
 	};
-}();
+}
+
+define(char_ui);

@@ -1,4 +1,4 @@
-var tip_ui = function() {
+var tip_ui = function(require) {
 	var $tip;
 	var $prompt;
 
@@ -67,4 +67,6 @@ var tip_ui = function() {
 		init: _init,
 		trun: _trun,
 	}
-}();
+}
+
+define(tip_ui);

@@ -1,4 +1,4 @@
-var img_btn = function() {
+var img_btn = function(require) {
 	var $btn;
 
 
@@ -18,10 +18,12 @@ var img_btn = function() {
 	}
 
 	function show_hadnle(e) {
-		img_dialog.init();
+		require('./img_dialog').init();
 	}
 
 	return {
 		init: _init,
 	}
-}();
+}
+
+define(img_btn);

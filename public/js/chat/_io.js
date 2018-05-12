@@ -1,6 +1,5 @@
-var _io = function() {
+var _io = function(require) {
 	var __io;
-
 	function _init(path) {
 		__io = io.connect(path);
 		return this;
@@ -38,4 +37,6 @@ var _io = function() {
 		send: _send,
 		get_io: _get_io,
 	}
-}();
+}
+
+define(_io);

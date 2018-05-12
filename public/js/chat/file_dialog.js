@@ -1,4 +1,4 @@
-var file_dialog = function() {
+var file_dialog = function(require) {
 	var $dialog;
 	var _file_file;
 	var $form;
@@ -37,4 +37,6 @@ var file_dialog = function() {
 	return {
 		init: _init,
 	}
-}();
+}
+
+define(file_dialog);

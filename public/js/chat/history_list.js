@@ -55,4 +55,6 @@ var history_list = function() {
 	return {
 		init: _init,
 	}
-}();
+}
+
+define(history_list);
