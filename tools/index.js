@@ -1,7 +1,7 @@
-var map = require('./map.js')
-var zip = require('./zip.js')
-var filter = require('./filter.js');
-var compose = require('./compose.js');
+const map = require('./map.js')
+const zip = require('./zip.js')
+const filter = require('./filter.js');
+const compose = require('./compose.js');
 module.exports = function (name) {
 	var arg = _slice(arguments,1);
 	switch(name) {

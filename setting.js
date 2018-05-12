@@ -1,4 +1,4 @@
-var mongo_opt = {
+const mongo_opt = {
 	cookieSecret: 'myblog',
 	db: 'blog',
 	host: 'localhost',
@@ -6,7 +6,7 @@ var mongo_opt = {
 	url: 'mongodb://localhost/blog',
 };
 
-var session_opt = {
+const session_opt = {
     secret: mongo_opt.cookieSecret,
     key: mongo_opt.db,//cookie name
     cookie: {maxAge: 1000 * 60 * 60 * 24 * 1},//1 days
@@ -16,7 +16,7 @@ var session_opt = {
     //     url: 'mongodb://localhost/blog'
     // })
 };
-var mysql_opt = {
+const mysql_opt = {
 	host : 'localhost',
 	user : 'root',
 	password : 'root',
