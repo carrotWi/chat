@@ -67,10 +67,11 @@
         {{#qq_option qqs}}
         <img src="{{src}}" alt=""> {{/qq_option}}
     </script>
-    <!-- <script type="text/x-handlebars" id="tip">
-        <div class="alert {{class}}">{{msg}}</div>
-    </script> -->
-    <!-- 入口函数 -->
+    <script type="text/x-handlebars" charset="utf-8" id="file_tem">
+        {{#file_item files}}
+        <button class="btn btn-block" style="padding-right: 0px;padding-left: 0px;" class="file_item" disabled="disabled" data-file-id="{{id}}">{{name}}</button>
+        {{/file_item}}
+    </script>
 </head>
 
 <body>
@@ -118,13 +119,13 @@
                                         <a href="javascript:;" id="face"><span class=" btn-default btn-lg btn">表情</span></a>
                                         <!-- 表情 -->
                                         <!-- 图片 -->
-                                        <a href="javascript:;" id="img_btn"><span class=" btn-default btn-lg btn glyphicon glyphicon-picture">图片</span></a>
+                                        <!-- <a href="javascript:;" id="img_btn"><span class=" btn-default btn-lg btn glyphicon glyphicon-picture">图片</span></a> -->
                                         <!-- 图片 -->
                                         <!-- 音乐 -->
-                                        <a href="javascript:;"><span class=" btn-default btn-lg btn glyphicon glyphicon-music">音乐</span></a>
+                                        <!-- <a href="javascript:;"><span class=" btn-default btn-lg btn glyphicon glyphicon-music">音乐</span></a> -->
                                         <!-- 音乐 -->
                                         <!-- 视频 -->
-                                        <a href="javascript:;"><span class=" btn-default btn-lg btn glyphicon glyphicon-sd-video">视频</span></a>
+                                        <!-- <a href="javascript:;"><span class=" btn-default btn-lg btn glyphicon glyphicon-sd-video">视频</span></a> -->
                                         <!-- 视频 -->
                                         <!-- 位置 -->
                                         <a href="javascript:;"><span class=" btn-default btn-lg btn glyphicon glyphicon-map-marker">位置</span></a>
@@ -170,12 +171,33 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 fade" id="user_layout">
+                <div class="col-md-3 fade" id="tab_layout">
                     <div class="row">
                         <div class="col-md-12">
-                            <div id="users" class="col-md-12 jumbotron pre-scrollable " style="height: 2000px; padding: 20px;margin: 0px;" id="users" style="position: relative;">
-                                <!-- <span style="position: absolute;margin: 10px;" class="">用户</span> -->
+                            <!-- 选项卡 -->
+                            <ul id="myTab" class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#home" data-toggle="tab">
+                                         用户
+                                    </a>
+                                </li>
+                                <li><a href="#ios" data-toggle="tab">公告</a></li>
+                                <li><a href="#file_pane" data-toggle="tab">文件</a></li>
+                            </ul>
+                            <div id="myTabContent" class="tab-content">
+                                <div class="tab-pane fade in active" id="home">
+                                    <div id="users" class="col-md-12 jumbotron pre-scrollable " style="height: 2000px; padding: 20px;margin: 0px;" id="users" style="position: relative;">
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="ios">
+                                    <p>iOS 是一个由苹果公司开发和发布的手机操作系统。最初是于 2007 年首次发布 iPhone、iPod Touch 和 Apple TV。iOS 派生自 OS X，它们共享 Darwin 基础。OS X 操作系统是用在苹果电脑上，iOS 是苹果的移动版本。</p>
+                                </div>
+                                <div class="tab-pane fade" id="file_pane">
+                                    <div id="files" class="col-md-12 jumbotron pre-scrollable " style="height: 2000px; padding: 20px;margin: 0px;" id="users" style="position: relative;">
+                                    </div>
+                                </div>
                             </div>
+                            <!-- 选项卡 -->
                         </div>
                     </div>
                 </div>

@@ -132,6 +132,7 @@ function _login_success_handle(socket) {
 	//user-->json
 	socket.on('login_success', function(user) {
 		var user = new m.User().init(user);
+		
 		//换房间的监听器
 		_switch_room_handle(socket);
 		//重新加载房间列表的监听器

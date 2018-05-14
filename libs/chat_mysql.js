@@ -215,6 +215,47 @@ function _add_msg(msg, cb) {
 	}
 }
 
+function _add_msg_img(img, cb) {
+	if (!img.path) {
+		var err = new Error('path');
+		cb(err);
+	}
+	async.waterfall([
+		function(callback) {
+			//保存路径
+			var value = [img.path];
+			var sql = 'INSERT INTO msg_img_path (path) VALUES (?);';
+			connection.query(sql, value, function(err, result, filed) {
+				callback(err, result, filed);
+			});
+		},
+		function(result, filed, callback) {
+			//保存时间
+			//拿到了主键
+			img.id = result.insertId;
+			var value = [img.time, img.id];
+			var sql = 'INSERT INTO msg_img_time (time,img_id) VALUES (?,?);';
+			connection.query(sql, value, function(err, result, filed) {
+				callback(err, result, filed);
+			});
+		},
+		function(result, filed, callback) {
+			// 保存发送的用户信息s
+			var value = [img.user_id, img.id];
+			var sql = 'INSERT INTO msg_img_user (user_id,img_id) VALUES (?,?);';
+			connection.query(sql, value, function(err, result, filed) {
+				callback(err, result, filed);
+			});
+		}
+	], function(err, result) {
+		if (err) {
+			cb(err);
+		} else {
+			cb(null, img)
+		}
+	});
+}
+
 function _add(table) {
 	var args = _slice(arguments, 1);
 	switch (table) {
@@ -226,6 +267,9 @@ function _add(table) {
 			break;
 		case 'msg':
 			_add_msg.apply(null, args);
+			break;
+		case 'msg_img':
+			_add_msg_img.apply(null, args);
 			break;
 	}
 }
@@ -475,6 +519,31 @@ function _all_msg(cb) {
 	});
 }
 
+function _all_msg_img(cb) {
+	async.waterfall([
+		function(callback) {
+			var sql = 'SELECT msg_img_path.id,msg_img_path.path,msg_img_time.time,msg_img_user.user_idFROM (	msg_img_path INNER JOIN (		msg_img_time INNER JOIN msg_img_user ON msg_img_time.img_id =msg_img_user.img_id	) ON msg_img_path.id=msg_img_time.img_id)';
+			connection.query(sql, callback);
+		},
+		function(result, field, callback) {
+			var imgs = [];
+			result.forEach(function(item) {
+				var u = new m.Img().init(item);
+				imgs.push(u);
+			});
+			callback(null, imgs);
+		}
+	], function(err, imgs) {
+		if (cb) {
+			if (err) {
+				cb(err);
+				return
+			}
+			cb(null, imgs);
+		}
+	});
+}
+
 function _all(table) {
 	var args = _slice(arguments, 1);
 	switch (table) {
@@ -486,6 +555,9 @@ function _all(table) {
 			break;
 		case 'msg':
 			_all_msg.apply(null, args);
+			break;
+		case 'msg_img':
+			_all_msg_img.apply(null, args);
 			break;
 		default:
 			throw "table";

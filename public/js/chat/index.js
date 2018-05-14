@@ -36,6 +36,14 @@ define(function(require) {
 				nav_ui.updata_now_room(data);
 			});
 		});
+
+		_io.on('file_list', function(data) {
+			file_list_ui.init(_io, hb, data);
+			_io.on('now_file', function(data) {
+				file_list_ui.updata_now_file(data);
+			});
+		});
+
 	}
 
 });

@@ -22,6 +22,11 @@ var hb = function(require) {
 				return option.fn(value);
 			}).join(' ');
 		});
+		Handlebars.registerHelper('file_item', function(context, option) {
+			return context.map(function(value) {
+				return option.fn(value);
+			}).join(' ');
+		});
 
 		return this;
 	}

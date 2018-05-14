@@ -65,6 +65,27 @@ _Room.prototype.init = function(opt) {
 	}
 	return this;
 }
+
+function _Img() {
+	this.id;
+	this.path;
+	this.type;
+	this.user_id;
+	this.room_id;
+	this.size;
+	this.time = format_time(new Date());
+}
+_Img.prototype.init = function(opt) {
+	for (var key in opt) {
+		if (opt.hasOwnProperty(key)) {
+			this[key] = opt[key];
+		}
+	}
+	return this;
+}
+
+
 exports.Msg = _Msg;
 exports.User = _User;
 exports.Room = _Room;
+exports.Img = _Img;

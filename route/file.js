@@ -5,12 +5,13 @@ const iconv = require('iconv-lite');
 const fs = require('fs');
 const path = require('path');
 const formidable = require('formidable');
-
+const m = require('../libs/chat_module.js');
 module.exports = function(req, res) {
 	var form = new formidable.IncomingForm();
 	form.parse(req, function(err, fields, files) {
 		req.files = files;
 		req.fields = fields;
+		
 
 		async.forEach(
 			files,
@@ -18,41 +19,123 @@ module.exports = function(req, res) {
 
 				async.waterfall([
 					function(cb) {
-						//从服务器拿到文件
-						var tmp_path = item.path;
-						var target_path = path.join(__dirname, '../tmp/', item.name);
-						if (!tmp_path || !target_path) {
-							var err = new Error('');
-							cb(err);
-							return
+						try {
+							//从服务器拿到文件
+							var tmp_path = item.path;
+							var target_path = path.join(__dirname, '../tmp/', item.name);
+							var user_id = 4;
+							var room_id = 1;
+							var img = new m.Img().init({
+								"path": target_path,
+								"size": item.size,
+								"type": 'user_msg',
+								"user_id": user_id,
+								"room_id": room_id,
+							});
+							if (!tmp_path || !target_path) {
+								var err = new Error('');
+								cb(err);
+								return
+							}
+						} catch (err) {
+							cb(err)
 						}
-						fs.rename(tmp_path, target_path, function (err) {
+						fs.rename(tmp_path, target_path, function(err) {
 							if (err) {
 								cb(err);
 							} else {
-								cb(null,tmp_path);
+								cb(null, img);
 							}
 						})
 
+					},
+					function(img, cb) {
+						//开始写数据库的逻辑
+						chat_database.add_msg_img(img,cb);
 					}
-				], function(err) {
+				], function(err,img) {
 					// result now equals 'done'   
 					if (err) {
 						callback(err);
 					} else {
-						callback(null);
+						debugger
+						callback(null,img);
 					}
 				});
 
 			},
-			function(err, msg) {
+			function(err, img) {
 				// if any of the saves produced an error, err would equal that error
 				if (err) {
 					throw err;
-				} else {
-					res.send();
-				}
+				} 
+				res.end();
 			}
 		);
 	});
 }
+
+//拿到一个文件并写入数据库
+function _waterfall_a(item, callback) {
+	async.waterfall([
+		function(cb) {
+			try {
+				//从服务器拿到文件
+				var tmp_path = item.path;
+				var target_path = path.join(__dirname, '../tmp/', item.name);
+				var user_id = 4;
+				var room_id = 1;
+				var img = new m.Img().init({
+					"path": target_path,
+					"size": item.size,
+					"type": 'user_msg',
+					"user_id": user_id,
+					"room_id": room_id,
+				});
+				if (!tmp_path || !target_path) {
+					var err = new Error('');
+					cb(err);
+					return
+				}
+			} catch (err) {
+				cb(err)
+			}
+			fs.rename(tmp_path, target_path, function(err) {
+				if (err) {
+					cb(err);
+				} else {
+					cb(null, img);
+				}
+			})
+
+		},
+		function(img, cb) {
+			//开始写数据库的逻辑
+			chat_database.add_msg_img(img,cb);
+		}
+	], function(err,img) {
+		// result now equals 'done'   
+		if (err) {
+			callback(err);
+		} else {
+			debugger
+			callback(null,img);
+		}
+	});
+}
+
+
+function _waterfall_b(err,img,fn) {
+	if(err){
+		fn(err);
+		return
+	}
+	async.waterfall([
+	  function(callback){
+
+	  }
+	], function (err, result) {
+	});
+
+}
+

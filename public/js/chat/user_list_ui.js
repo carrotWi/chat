@@ -51,7 +51,7 @@ var user_list_ui = function(require) {
 	function _cache() {
 		$tem_user = $('#user');
 		$users = $('#users');
-		$user_layout = $('#user_layout');
+		$user_layout = $('#tab_layout');
 	}
 
 	function _add(user) {

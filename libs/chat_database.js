@@ -152,7 +152,7 @@ module.exports = function() {
 				},
 				function(users, callback) {
 					tools('filter', users, function(u) {
-						return _has_same(opt,u);
+						return _has(opt, u);
 					}, callback);
 				}
 			], function(err, users) {
@@ -168,9 +168,9 @@ module.exports = function() {
 		}
 	}
 
-	function _has_same(opt,obj) {
+	function _has(opt, obj) {
 		var result = false;
-		Object.keys(obj).forEach(function (key) {
+		Object.keys(obj).forEach(function(key) {
 			if (opt[key]) {
 				result = result || (opt[key] === obj[key]);
 			}
@@ -231,6 +231,33 @@ module.exports = function() {
 		}
 	}
 
+	function find_msg_imgs(opt, cb) {
+		async.waterfall([
+			function(callback) {
+				chat_mysql.all('msg_img', callback);
+			},
+			function(imgs, callback) {
+				//用用async的过滤器 filter()
+				async.filter(imgs, function(img, callback) {
+					var result = true; 
+					callback(null,result);
+				}, function(err, imgs) {
+					if (err) {
+						cb(err);
+					} else {
+						callback(null, imgs);
+					}
+				});
+			}
+		], function(err, imgs) {
+			if (err) {
+				cb(err);
+			} else {
+				cb(null, imgs);
+			}
+		});
+	}
+
 	function find(table) {
 		var arg = _slice(arguments, 1);
 		switch (table) {
@@ -242,6 +269,9 @@ module.exports = function() {
 				break;
 			case 'msgs':
 				find_msgs.apply(null, arg);
+				break;
+			case 'msg_imgs':
+				find_msg_imgs.apply(null, arg);
 				break;
 			default:
 				throw 'not table';
@@ -268,12 +298,27 @@ module.exports = function() {
 		}
 	}
 
+	function _add_msg_img(img, fn) {
+		async.waterfall([
+			function(callback) {
+				chat_mysql.add('msg_img', img, callback);
+			}
+		], function(err, img) {
+			if (err) {
+				fn(err);
+			} else {
+				fn(null, img);
+			}
+		});
+	}
+
 	return {
 		verify: verify,
 		find: find,
 		login: try_login,
 		add_room: add_room,
 		switch_room: _switch_room,
+		add_msg_img: _add_msg_img,
 	}
 }();
 

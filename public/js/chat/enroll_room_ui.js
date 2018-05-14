@@ -27,6 +27,8 @@ var enroll_room_ui = function(require) {
 		$enroll_dialog.modal('show');
 	}
 
+	
+	
 	function _validate() {
 		$form.validate({
 			rules: {
