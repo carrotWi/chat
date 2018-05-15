@@ -239,8 +239,8 @@ module.exports = function() {
 			function(imgs, callback) {
 				//用用async的过滤器 filter()
 				async.filter(imgs, function(img, callback) {
-					var result = true; 
-					callback(null,result);
+					var result = true;
+					callback(null, result);
 				}, function(err, imgs) {
 					if (err) {
 						cb(err);
@@ -258,6 +258,51 @@ module.exports = function() {
 		});
 	}
 
+	function find_files(opt, cb) {
+		async.waterfall([
+			function(callback) {
+				chat_mysql.all('file', callback);
+			},
+			function(files, callback) {
+				//用用async的过滤器 filter()
+				//屈辱的印记
+				// async.filter(files, function(file, callback) {
+				// 	// var result = opt.space ? (opt.id === file.room_id) : (opt.id === file.user_id);
+				// 	// callback(null, !!result);
+				// 	_filter_(opt, file, callback);
+				// }, function(err, files) {
+				// 	if (err) {
+				// 		callback(err);
+				// 	} else {
+				// 		callback(null, files);
+				// 	}
+				// });
+				try {
+					files = files.filter(function(file) {
+						var result = opt.space ? (opt.id === file.room_id) : (opt.id === file.user_id);
+						return result
+					});
+					callback(null, files);
+				} catch (err) {
+					callback(err);
+				}
+
+			}
+		], function(err, files) {
+			if (err) {
+				cb(err);
+			} else {
+				cb(null, files);
+			}
+		});
+	}
+
+	function _filter_(opt, file, callback) {
+		opt.filter(function(item) {
+			var result = opt.space ? (opt.id === file.room_id) : (opt.id === file.user_id);
+		});
+	}
+
 	function find(table) {
 		var arg = _slice(arguments, 1);
 		switch (table) {
@@ -272,6 +317,9 @@ module.exports = function() {
 				break;
 			case 'msg_imgs':
 				find_msg_imgs.apply(null, arg);
+				break;
+			case 'files':
+				find_files.apply(null, arg);
 				break;
 			default:
 				throw 'not table';
@@ -312,6 +360,20 @@ module.exports = function() {
 		});
 	}
 
+	function _add_file(file, fn) {
+		async.waterfall([
+			function(callback) {
+				chat_mysql.add('file', file, callback);
+			}
+		], function(err, file) {
+			if (err) {
+				fn(err);
+			} else {
+				fn(null, file);
+			}
+		});
+	}
+
 	return {
 		verify: verify,
 		find: find,
@@ -319,6 +381,7 @@ module.exports = function() {
 		add_room: add_room,
 		switch_room: _switch_room,
 		add_msg_img: _add_msg_img,
+		add_file : _add_file,
 	}
 }();
 

@@ -23,9 +23,9 @@ module.exports = function(req, res) {
 							//从服务器拿到文件
 							var tmp_path = item.path;
 							var target_path = path.join(__dirname, '../tmp/', item.name);
-							var user_id = 4;
-							var room_id = 1;
-							var img = new m.Img().init({
+							var user_id = req.session.user.id;
+							var room_id = req.session.room.id;
+							var file = new m.File().init({
 								"path": target_path,
 								"size": item.size,
 								"type": 'user_msg',
@@ -44,27 +44,27 @@ module.exports = function(req, res) {
 							if (err) {
 								cb(err);
 							} else {
-								cb(null, img);
+								cb(null, file);
 							}
 						})
 
 					},
-					function(img, cb) {
+					function(file, cb) {
 						//开始写数据库的逻辑
-						chat_database.add_msg_img(img,cb);
+						chat_database.add_file(file,cb);
 					}
-				], function(err,img) {
+				], function(err,file) {
 					// result now equals 'done'   
 					if (err) {
 						callback(err);
 					} else {
 						debugger
-						callback(null,img);
+						callback(null,file);
 					}
 				});
 
 			},
-			function(err, img) {
+			function(err, file) {
 				// if any of the saves produced an error, err would equal that error
 				if (err) {
 					throw err;
@@ -85,10 +85,10 @@ function _waterfall_a(item, callback) {
 				var target_path = path.join(__dirname, '../tmp/', item.name);
 				var user_id = 4;
 				var room_id = 1;
-				var img = new m.Img().init({
+				var file = new m.file().init({
 					"path": target_path,
 					"size": item.size,
-					"type": 'user_msg',
+					"type": 'post_file',
 					"user_id": user_id,
 					"room_id": room_id,
 				});
@@ -104,28 +104,28 @@ function _waterfall_a(item, callback) {
 				if (err) {
 					cb(err);
 				} else {
-					cb(null, img);
+					cb(null, file);
 				}
 			})
 
 		},
-		function(img, cb) {
+		function(file, cb) {
 			//开始写数据库的逻辑
-			chat_database.add_msg_img(img,cb);
+			chat_database.add_file(file,cb);
 		}
-	], function(err,img) {
+	], function(err,file) {
 		// result now equals 'done'   
 		if (err) {
 			callback(err);
 		} else {
 			debugger
-			callback(null,img);
+			callback(null,file);
 		}
 	});
 }
 
 
-function _waterfall_b(err,img,fn) {
+function _waterfall_b(err,file,fn) {
 	if(err){
 		fn(err);
 		return

@@ -216,7 +216,7 @@ function _add_msg(msg, cb) {
 }
 
 function _add_msg_img(img, cb) {
-	if (!img.path) {
+	if (!img.path || !img.user_id || !img.room_id) {
 		var err = new Error('path');
 		cb(err);
 	}
@@ -246,12 +246,69 @@ function _add_msg_img(img, cb) {
 			connection.query(sql, value, function(err, result, filed) {
 				callback(err, result, filed);
 			});
+		},
+		function(result, filed, callback) {
+			//保存房间
+			var value = [img.room_id, img.id];
+			var sql = 'INSERT INTO msg_img_room (room_id,img_id) VALUES (?,?);';
+			connection.query(sql, value, function(err, result, filed) {
+				callback(err, result, filed);
+			});
 		}
 	], function(err, result) {
 		if (err) {
 			cb(err);
 		} else {
 			cb(null, img)
+		}
+	});
+}
+
+function _add_file(file, cb) {
+	if (!file.path || !file.user_id || !file.room_id) {
+		var err = new Error('path');
+		cb(err);
+	}
+	async.waterfall([
+		function(callback) {
+			//保存路径
+			var value = [file.path];
+			var sql = 'INSERT INTO post_file_path (path) VALUES (?);';
+			connection.query(sql, value, function(err, result, filed) {
+				callback(err, result, filed);
+			});
+		},
+		function(result, filed, callback) {
+			//保存时间
+			//拿到了主键
+			file.id = result.insertId;
+			var value = [file.time, file.id];
+			var sql = 'INSERT INTO post_file_time (time,file_id) VALUES (?,?);';
+			connection.query(sql, value, function(err, result, filed) {
+				callback(err, result, filed);
+			});
+		},
+		function(result, filed, callback) {
+			// 保存发送的用户信息s
+			var value = [file.user_id, file.id];
+			var sql = 'INSERT INTO post_file_user (user_id,file_id) VALUES (?,?);';
+			connection.query(sql, value, function(err, result, filed) {
+				callback(err, result, filed);
+			});
+		},
+		function(result, filed, callback) {
+			//保存房间
+			var value = [file.room_id, file.id];
+			var sql = 'INSERT INTO post_file_room (room_id,file_id) VALUES (?,?);';
+			connection.query(sql, value, function(err, result, filed) {
+				callback(err, result, filed);
+			});
+		}
+	], function(err, result) {
+		if (err) {
+			cb(err);
+		} else {
+			cb(null, file)
 		}
 	});
 }
@@ -265,11 +322,10 @@ function _add(table) {
 		case 'user':
 			_add_user.apply(null, args);
 			break;
-		case 'msg':
-			_add_msg.apply(null, args);
-			break;
-		case 'msg_img':
+		case 'msg_file':
 			_add_msg_img.apply(null, args);
+		case 'file':
+			_add_file.apply(null, args);
 			break;
 	}
 }
@@ -544,6 +600,31 @@ function _all_msg_img(cb) {
 	});
 }
 
+function _all_file(cb) {
+	async.waterfall([
+		function(callback) {
+			var sql = 'SELECT post_file_path.id, post_file_path.path, post_file_time.time, post_file_user.user_id, post_file_room.room_id FROM ( 	post_file_path INNER JOIN ( 		post_file_time INNER JOIN  		(post_file_user INNER JOIN post_file_room ON post_file_room.file_id=post_file_user.file_id) 		ON post_file_time.file_id = post_file_user.file_id 	) ON post_file_path.id=post_file_time.file_id );';
+			connection.query(sql, callback);
+		},
+		function(result, field, callback) {
+			var files = [];
+			result.forEach(function(item) {
+				var f = new m.File().init(item);
+				files.push(f);
+			});
+			callback(null, files);
+		}
+	], function(err, files) {
+		if (cb) {
+			if (err) {
+				cb(err);
+				return
+			}
+			cb(null, files);
+		}
+	});
+}
+
 function _all(table) {
 	var args = _slice(arguments, 1);
 	switch (table) {
@@ -559,6 +640,9 @@ function _all(table) {
 		case 'msg_img':
 			_all_msg_img.apply(null, args);
 			break;
+		case 'file':
+			_all_file.apply(null, args);
+			break;	
 		default:
 			throw "table";
 			break;

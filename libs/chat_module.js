@@ -84,7 +84,25 @@ _Img.prototype.init = function(opt) {
 	return this;
 }
 
+function _File() {
+	this.id;
+	this.path;
+	this.type;
+	this.user_id;
+	this.room_id;
+	this.size;
+	this.time = format_time(new Date());
+}
+_File.prototype.init = function(opt) {
+	for (var key in opt) {
+		if (opt.hasOwnProperty(key)) {
+			this[key] = opt[key];
+		}
+	}
+	return this;
+}
 
+exports.File = _File;
 exports.Msg = _Msg;
 exports.User = _User;
 exports.Room = _Room;

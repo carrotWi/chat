@@ -5,6 +5,7 @@ const chat_mysql = require('./chat_mysql.js');
 const async = require('async');
 const tools = require('../tools/index.js')
 const m = require('../libs/chat_module.js')
+var server_file_list;
 var io;
 //在线的用户
 const socket_user = {};
@@ -132,7 +133,6 @@ function _login_success_handle(socket) {
 	//user-->json
 	socket.on('login_success', function(user) {
 		var user = new m.User().init(user);
-		
 		//换房间的监听器
 		_switch_room_handle(socket);
 		//重新加载房间列表的监听器
@@ -162,6 +162,13 @@ function _login_success_handle(socket) {
 					throw err;
 				}
 				var room = rooms[0];
+				server_file_list = require('./chat_server_file_list.js')(socket, user, room);
+				//文件等操作
+				server_file_list.emit_file_list(function (err) {
+					if (err) {
+						throw err;
+					}
+				})
 				//加入房间
 				_join_room(socket, room, user);
 				// 保存这个socket所在的房间

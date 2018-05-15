@@ -7,7 +7,8 @@ define(function(require) {
 	const chat_buttons = require('./chat_buttons');
 	const tip_ui = require('./tip_ui');
 	const login_enroll_ui = require('./login_enroll_ui');
-	
+	const file_list_ui = require('./file_list_ui');
+
 	window.onload = function() {
 		_io.init('http://localhost:8088');
 		hb.init();
